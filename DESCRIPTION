@@ -1,0 +1,30 @@
+Package: cvxoptdes
+Type: Package
+Title: Convex penalized optimal experiment design 
+Version: 1.0.0.9000
+Date: 2026-08-01
+Authors@R: person("Joris", "Chau", email = "joris.chau@openanalytics.eu", role = c("aut", "cre"))
+Description: An R-package for convex optimal experiment design, using exclusively open-source optimization solvers. 'cvxoptdes' provides an object-oriented interface (via 'R6') for specifying and optimizing designs for linear models, generalized linear/additive models, nonlinear models, and random intercept linear mixed models. It supports optimization of penalized and stratified approximate designs using the Splitting Cone Solver (SCS) and optimal rounding to integer-valued designs using point-exchange methods or mixed-integer programming with the HiGHS solver. 
+Depends: 
+    R (>= 4.0)
+Imports: 
+    methods, 
+    Matrix, 
+    stats,
+    R6, 
+    reformulas, 
+    progress, 
+    mgcv,
+    mirai
+Suggests:
+    highs,
+    knitr,
+    rmarkdown
+Encoding: UTF-8
+Language: en-US
+License: Apache License (>= 2.0) | file LICENSE
+SystemRequirements: GNU make, CMake
+Biarch: true
+LazyData: true
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

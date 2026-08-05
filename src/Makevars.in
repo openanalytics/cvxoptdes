@@ -1,0 +1,64 @@
+## set by configure
+CMAKE = @CMAKE@
+MKLROOT = @MKLROOT@
+HIGHS_HOME = @HIGHS_HOME@
+
+SCS_DIR = scs
+SCS_BUILD = $(SCS_DIR)/build
+LIB_DIR = $(SCS_BUILD)/lib
+LIB64_DIR = $(SCS_BUILD)/lib64
+SPECTRAL_CONES=ON
+
+ifneq ($(strip $(MKLROOT)),)
+	## use MKL Pardiso solver
+	SCS_STATIC_LIB = $(shell if [ -f $(LIB64_DIR)/libscsmkl.a ]; then echo $(LIB64_DIR)/libscsmkl.a; else echo $(LIB_DIR)/libscsmkl.a; fi)
+	MKL_LIB_PATH = $(shell if [ -d $(MKLROOT)/lib/intel64 ]; then echo $(MKLROOT)/lib/intel64; else echo $(MKLROOT)/lib; fi)
+	PKG_CPPFLAGS = -I$(SCS_DIR)/include -I$(MKLROOT)/include -DUSE_LAPACK -DCOPYAMATRIX -DMKL_LP64
+	PKG_LIBS = $(SCS_STATIC_LIB) \
+			   -Wl,--start-group \
+               $(MKL_LIB_PATH)/libmkl_intel_lp64.a \
+               $(MKL_LIB_PATH)/libmkl_sequential.a \
+               $(MKL_LIB_PATH)/libmkl_core.a \
+               -Wl,--end-group \
+               -lgomp -lpthread -ldl \
+			   $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+else
+	## use direct solver
+	SCS_STATIC_LIB = $(shell if [ -f $(LIB64_DIR)/libscsdir.a ]; then echo $(LIB64_DIR)/libscsdir.a; else echo $(LIB_DIR)/libscsdir.a; fi)
+	PKG_CPPFLAGS = -I$(SCS_DIR)/include -DUSE_LAPACK -DCOPYAMATRIX
+	PKG_LIBS = $(SCS_STATIC_LIB) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+endif
+
+ifneq ($(strip $(HIGHS_HOME)),)
+	## use HiGHS install found at HIGHS_HOME
+	PKG_CPPFLAGS += -I$(HIGHS_HOME)/include/highs -I$(HIGHS_HOME)/include/highs/interfaces -DHIGHS_AVAILABLE=1
+	PKG_LIBS += -L$(HIGHS_HOME)/lib -lhighs
+endif
+
+ifeq ($(SPECTRAL_CONES),ON)
+	PKG_CPPFLAGS += -DUSE_SPECTRAL_CONES=1
+endif
+
+.PHONY: scs_build
+$(SHLIB): scs_build
+
+scs_build:
+		(cd $(SCS_DIR) && mkdir -p build; \
+		  $(if $(strip $(MKLROOT)), \
+				export MKLROOT="$(MKLROOT)" &&, \
+				unset MKLROOT &&) \
+			CC="$(CC)" CFLAGS="$(CFLAGS)" \
+			CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" \
+			$(CMAKE) -S . \
+				-B build \
+				-DCMAKE_BUILD_TYPE=Release \
+				-DBUILD_SHARED_LIBS:bool=OFF \
+				-DCMAKE_POSITION_INDEPENDENT_CODE:bool=ON \
+				-DNO_READ_WRITE:bool=ON \
+				-DDLONG:bool=OFF \
+				-DUSE_OPENMP:bool=OFF \
+				-DLAPACK_LINK_LIBRARIES="$(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)" \
+				-DUSE_LAPACK:bool=ON \
+				-DUSE_SPECTRAL_CONES:bool=$(SPECTRAL_CONES) \
+				-DUSE_CSD_CONE:bool=OFF; \
+			$(MAKE) -C build)

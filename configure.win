@@ -1,0 +1,46 @@
+#!/bin/sh
+
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
+
+if test -n "$CMAKE"; then
+    echo "CMAKE set to: $CMAKE"
+else 
+    CMAKE=$(command -v cmake 2>/dev/null)
+    if test -n "$CMAKE"; then
+        echo "CMAKE set to: $CMAKE"
+    else
+        echo "ERROR: cmake not found"
+        exit 1
+    fi
+fi
+
+# skip MKLROOT on windows
+MKLROOT=
+
+if test -n "$HIGHS_HOME"; then
+    echo "HIGHS_HOME set to: $HIGHS_HOME"
+    HIGHS_HOME=${HIGHS_HOME}
+else 
+    echo "HIGHS_HOME undefined, not using externel HiGHS installation"
+fi
+
+export CMAKE
+export MKLROOT
+export HIGHS_HOME
+
+if test -f src/Makevars.in; then
+    sed -e "s|@CMAKE@|${CMAKE}|g" \
+        -e "s|@MKLROOT@|${MKLROOT}|g" \
+        -e "s|@HIGHS_HOME@|${HIGHS_HOME}|g" \
+        src/Makevars.in > src/Makevars.win
+    echo "Created src/Makevars.win"
+else
+    echo "ERROR: src/Makevars.in not found"
+    exit 1
+fi
+
+exit 0

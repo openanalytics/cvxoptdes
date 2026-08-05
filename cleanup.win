@@ -1,0 +1,6 @@
+#!/bin/sh
+rm -f config.log config.status confdefs.h *.gcno
+rm -f src/*.o src/*.dll src/Makevars.win src/symbols.rds
+rm -rf *~ */*~ autom4te.cache
+rm -rf src/scs/build
+exit 0

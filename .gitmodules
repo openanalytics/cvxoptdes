@@ -1,0 +1,4 @@
+[submodule "src/scs"]
+	path = src/scs
+	url = https://github.com/JorisChau/scs.git
+	branch = feat/disable_csd_cone
