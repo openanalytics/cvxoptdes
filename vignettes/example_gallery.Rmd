@@ -2,7 +2,7 @@
 title: "Example gallery"
 output:
   rmarkdown::html_vignette
-date: "2026-08-03"
+date: "2026-08-11"
 vignette: >
   %\VignetteIndexEntry{Example gallery}
   %\VignetteEngine{knitr::rmarkdown}
@@ -66,12 +66,12 @@ $$
 
 The GP model has three kernel parameters to estimate: the marginal standard deviation ($\sigma$) of the kernel and two length-scale parameters ($\rho = (\rho_1, \rho_2)$), one for each dimension. The responses are assumed to be noise-free, for this reason only a small constant $\lambda = 1e-8$ is added to the diagonal of the GP kernel/covariance matrix to ensure positive definiteness.   
 
-In `vignette("augment_design")`, the section *Gaussian process regression* explains how the GP model can be expressed as a Bayesian linear model with design matrix $\Phi$ depending on the estimated kernel $k(x, x')$. Using the posterior medians of the kernel parameters ($\sigma$, $\rho$), the $(n \times m)$-dimensional $\Phi$ matrix is calculated by stacking the row vectors:
+The section *Gaussian process regression* in `vignette("augment_design")` explains how the GP model can be expressed as an (approximate) Bayesian linear model with design matrix $\Phi$ depending on the estimated kernel $k(\boldsymbol{x}, \boldsymbol{z})$. Using the posterior medians of the kernel parameters ($\sigma$, $\rho$), the $(n \times m)$-dimensional $\Phi$ matrix is calculated by stacking row vectors:
 
 $$
 \Phi_{i, } \ = \ \phi_X(\boldsymbol{x}_i) \ = L_{XX}^{-1}k(\boldsymbol{X}, \boldsymbol{x}_i), \quad \quad i = 1,\ldots, n
 $$
-where $L_{XX}^{-1}$ is the inverse of the Cholesky square root of $K_{XX} \mathbb{R}^{p \times p}$ and $k(\boldsymbol{X}, \boldsymbol{x}_i)$ is the cross-kernel vector between $\boldsymbol{X}$ and $\boldsymbol{x}_i$ with elements $k(\boldsymbol{x}_j, \boldsymbol{x}_i)$. Note that the $(m \times m)$-submatrix of $\Phi$ with rows corresponding to the design points in $\boldsymbol{X}$ is exactly the square root ($L_{XX}$) of $K_{XX}$.  
+where $L_{XX}^{-1}$ is the inverse of the Cholesky square root of $K_{XX} \in \mathbb{R}^{p \times p}$ and $k(\boldsymbol{X}, \boldsymbol{x}_i)$ is the cross-kernel vector between $\boldsymbol{X}$ and $\boldsymbol{x}_i$ with elements $k(\boldsymbol{x}_j, \boldsymbol{x}_i)$. Note that the $(m \times m)$-submatrix of $\Phi$ with rows corresponding to the design points in $\boldsymbol{X}$ is exactly the square root ($L_{XX}$) of $K_{XX}$.  
 
 The design can now be augmented in exactly the same way as for a linear model with $(n \times m)$ design matrix $\Phi$ and a small ridge penalty $\lambda = 1e-8$ to regularize the information matrix. To balance optimization of the design criterion (*exploration*) and maximization of the response (*exploitation*), we include costs proportional to (one minus) the GP posterior mean thereby giving preference to design points with a higher predicted response.  
 

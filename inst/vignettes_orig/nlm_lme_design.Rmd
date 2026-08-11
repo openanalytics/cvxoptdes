@@ -330,7 +330,7 @@ design <- lme_design$new(
 )
 ```
 
-The two-part model `formula` must always be of the form `~ fix.eff ~ ran.eff`, where `fix.eff` is a linear model formula encoding the fixed effects design matrix and `ran.eff` is an expression encoding the random effects levels. `ran.eff` is evaluated as a *factor*, with the factor levels determining the random effects groups. Using [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html)'s formula syntax, the two-part formula would be equivalent to `~(1 | Block) + Treatment + I(Treatment^2)`.
+The two-part model `formula` must always be of the form `~ fix.eff ~ ran.eff`, where `fix.eff` is a linear model formula encoding the fixed effects design matrix and `ran.eff` is an expression encoding the random effects levels. `ran.eff` is evaluated as a *factor*, with the factor levels determining the random effects groups. Using [`lme4`](https://CRAN.R-project.org/package=lme4)'s formula syntax, the two-part formula would be equivalent to `~(1 | Block) + Treatment + I(Treatment^2)`.
 
 Compared to `lm_design` and `nlm_design`, the `$optimize()` method requires an additional `max_iter` argument that specifies the number of iterations in the SCA procedure:
 
@@ -435,6 +435,40 @@ ggplot(plotdata, aes(x = frac, y = ses, color = type, group = type)) +
     scale_color_manual(values = c("D-optimal" = "#386cb0", "DoE1" = "#9E0041")) +
     labs(x = "Fraction of design space", y = "Prediction variance", color = "") +
   theme_minimal(base_size = 14)
+```
+
+In the case study in [@OM25] there is one additional week (week 2) containing a public holiday during which only two runs are feasible. Instead of a single common whole plot size $m$, `$round_split_plot()` also accepts a vector $m$ of individual whole plot sizes. If $m$ is a vector, it must be the same length as the number of levels in the hard-to-change factor `A`:
+
+```{r, echo = TRUE}
+## append data w/ 1 extra week
+data_8weeks <- transform(design$data, week = factor(week, levels = 1:8))
+data_8weeks <- rbind(data_8weeks, transform(subset(design$data, week == 1), week = 8))
+
+design_8weeks <- design$clone()
+design_8weeks$update(data = data_8weeks)
+```
+
+```{r, eval = FALSE, echo = TRUE}
+design_8weeks$optimize(criterion = "D", max_iter = 5, return_value = FALSE) 
+
+mirai::daemons(n = parallel::detectCores() / 2, seed = 1)
+
+exact_8weeks <- design_8weeks$round_split_plot(
+  m = c(3, 2, 3, 3, 3, 3, 3, 3),          ## non-equal whole plot sizes                  
+  hard_to_change = ~A,
+  n_repeats = 1000
+)
+
+mirai::daemons(0)
+```
+
+```{r, echo = FALSE}
+exact_8weeks <- numeric(nrow(design_8weeks$data))
+exact_8weeks[c(21, 60, 75, 82, 151, 214, 223, 235, 252, 294, 300, 331, 343, 379, 408, 432, 477, 500, 521, 566, 592, 604, 643)] <- 1
+```
+
+```{r, echo = TRUE}
+data_8weeks[exact_8weeks > 0, ]
 ```
 
 #### Penalized optimal design

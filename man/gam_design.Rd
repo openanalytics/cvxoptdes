@@ -5,8 +5,8 @@
 \title{Penalized generalized additive model optimal design}
 \description{
 An R6 class for managing penalized locally optimal experiment designs for generalized additive models.
-This class encapsulates the generalized additive model at a set of nominal parameter values, the discrete design grid, 
-optimization of an approximate continuous design, augmentation of an existing design, and optimal rounding 
+This class encapsulates the generalized additive model at a set of nominal parameter values, the discrete design grid,
+optimization of an approximate continuous design, augmentation of an existing design, and optimal rounding
 to exact integer designs.
 }
 \section{Optimal design problem}{
@@ -84,10 +84,13 @@ design <- gam_design$new(
 ## approximate I-optimal design
 design$optimize(criterion = "I")
 ## integer optimal design w/ 11 design points
-(exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1))
-## GAM fitted to integer design
-gam_fit <- mgcv::gam(NOx ~ s(E) + C, data = ethanol[exact_design > 0, ])
-summary(gam_fit)
+exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1)
+
+if(FALSE) {
+  ## GAM fitted to integer design
+  gam_fit <- mgcv::gam(NOx ~ s(E) + C, data = ethanol[exact_design > 0, ])
+  summary(gam_fit)
+}
 
 ## Volcano height dataset
 
@@ -106,13 +109,16 @@ design <- gam_design$new(
   data = data
 )
 ## integer I-optimal design w/ 30 design points
-exact_design <- design$round(m = 30, method = "optimal", criterion = "I", 
-                             n_repeats = 25, seed = 1, design_weights = FALSE)
+exact_design <- design$round(
+  m = 30, method = "optimal", criterion = "I", design_weights = FALSE
+)
 design$crit(exact_design, criterion = "I")
-## GAM fitted to integer design
-gam_fit <- mgcv::gam(y ~ s(x1, x2), data = data[exact_design > 0, ])
-summary(gam_fit)
 
+if(FALSE) {
+  ## GAM fitted to integer design
+  gam_fit <- mgcv::gam(y ~ s(x1, x2), data = data[exact_design > 0, ])
+  summary(gam_fit)
+}
 }
 \seealso{
 \code{\link[stats]{family}}
@@ -229,7 +235,7 @@ the standard (non-penalized) optimal design problem is solved.}
 \if{latex}{\out{\hypertarget{method-gam_design-update}{}}}
 \subsection{\code{gam_design$update()}}{
   Updates the fields of an existing object.
-Inputs should be named \code{formula}, \code{data}, \code{theta}, \code{family}, \code{weights}, \code{cost}, 
+Inputs should be named \code{formula}, \code{data}, \code{theta}, \code{family}, \code{weights}, \code{cost},
 \code{alpha}, \code{lambda} and/or \code{upper} respectively.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -239,7 +245,7 @@ Inputs should be named \code{formula}, \code{data}, \code{theta}, \code{family},
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{...}}{named arguments \code{formula}, \code{data}, \code{theta}, \code{family}, \code{weights}, \code{cost}, 
+      \item{\code{...}}{named arguments \code{formula}, \code{data}, \code{theta}, \code{family}, \code{weights}, \code{cost},
 \code{alpha}, \code{lambda} and/or \code{upper}.}
     }
     \if{html}{\out{</div>}}
@@ -512,8 +518,8 @@ in the \code{$cost} field.}
   Calculates the variance-covariance matrix of the model parameters based on an approximate or rounded (exact) design \eqn{(w_1, \ldots, w_n)} according to:
 \deqn{\Sigma \ = \ (X^T U^{1/2} \Omega U^{1/2} X)^{-1}}
 where \eqn{\Omega} is \eqn{\mathrm{diag}(\omega_1, \ldots, \omega_n)} with \eqn{\omega_i = w_i v_i}, and \eqn{U^{1/2}} is
-\eqn{\mathrm{diag}(\sqrt{u(x_1, \theta)}, \ldots, \sqrt{u(x_n, \theta)})}, with GLM weights \eqn{u(x_i, \theta) = \frac{1}{V(\mu_i)[g'(\mu_i)]^2}} 
-evaluated at the nominal parameter values. 
+\eqn{\mathrm{diag}(\sqrt{u(x_1, \theta)}, \ldots, \sqrt{u(x_n, \theta)})}, with GLM weights \eqn{u(x_i, \theta) = \frac{1}{V(\mu_i)[g'(\mu_i)]^2}}
+evaluated at the nominal parameter values.
 The design weights are initialized from the \code{design_weights} field, which is the optimal (approximate) design calculated by \code{$optimize()}.
 Use the \code{m} argument to evaluate the covariance matrix for a specific number of design points, in which case the sum of the design weights is scaled to \code{m}.
 To override the default approximate (optimal) design weights, a vector of design weights can be passed using the \code{design_weights} argument.
@@ -569,7 +575,7 @@ design weights remain unscaled, which for the default approximate (optimal) desi
       \item{\code{newdata}}{(optional) data frame or matrix with design points (rows) at which to return the standard error of prediction and which
 can be evaluated by \code{$formula}.}
       \item{\code{design_weights}}{(optional) vector of design weights for which to evaluate the estimated covariance matrix.}
-      \item{\code{type}}{the type of prediction required. The default choice \code{"link"} returns the standard error of prediction on the scale of the linear predictors, 
+      \item{\code{type}}{the type of prediction required. The default choice \code{"link"} returns the standard error of prediction on the scale of the linear predictors,
 whereas \code{"response"} returns the standard error of prediction on the scale of the response variable.}
       \item{\code{sigma2}}{numeric error variance used to scale the standard errors. Defaults to 1, returning the standardized standard error of prediction.}
     }
@@ -587,8 +593,8 @@ where \eqn{\Omega} is \eqn{\mathrm{diag}(\omega_1, \ldots, \omega_n)} with \eqn{
 column means:
 \deqn{\frac{\sum_{i=1}^n \omega_i X_{ij}}{\sum_{i=1}^n \omega_i}, \quad j = 1,\ldots, p}
 \eqn{D^{-1/2}} is \eqn{\mathrm{diag}(1/\sqrt{D_1},\ldots, 1/\sqrt{D_p})}, with \eqn{D_1,\ldots,D_p} the diagonal elements of \eqn{X_c^T U^{1/2} \Omega U^{1/2} X_c}.
-If \code{center = FALSE}, the uncentered correlation matrix is returned, which corresponds to the scale-invariant (unit diagonal) version of the information matrix 
-\eqn{M(w | X, v, \theta, F, g)}. 
+If \code{center = FALSE}, the uncentered correlation matrix is returned, which corresponds to the scale-invariant (unit diagonal) version of the information matrix
+\eqn{M(w | X, v, \theta, F, g)}.
 The design weights are initialized from the \code{design_weights} field, which is the optimal (approximate) design calculated by \code{$optimize()}.
 To override the default approximate (optimal) design weights, a vector of design weights can be passed using the \code{design_weights} argument.
 The vector must be the same length as the number of design points in \code{data}.

@@ -14,7 +14,7 @@ A data.frame containing 120 experiments with columns:
 }
 }
 \source{
-\href{https://github.com/aspuru-guzik-group/olympus/tree/main/src/olympus/datasets/dataset_fullerenes}{Olympus: Fullerenes dataset}
+\href{https://github.com/the-matter-lab/olympus/tree/main/src/olympus/datasets/dataset_fullerenes}{Olympus: Fullerenes dataset}
 }
 \usage{
 fullerenes

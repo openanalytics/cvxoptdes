@@ -5,8 +5,8 @@
 \title{Penalized nonlinear locally optimal design}
 \description{
 An R6 class for managing penalized locally optimal experiment designs for nonlinear models.
-This class encapsulates the nonlinear model at a set of nominal parameter values, the discrete design grid, 
-optimization of an approximate continuous design, augmentation of an existing design, and optimal rounding 
+This class encapsulates the nonlinear model at a set of nominal parameter values, the discrete design grid,
+optimization of an approximate continuous design, augmentation of an existing design, and optimal rounding
 to exact integer designs.
 }
 \section{Optimal design problem}{
@@ -62,7 +62,7 @@ in the objective to promote sparsity in the approximate design \eqn{w^*}. See \l
 
 \section{Optimality criteria}{
 
-The optimality criteria \eqn{\Phi(\cdot)} supported by \code{$optimize()}, \code{$augment()} and \code{$sparsify()} are: \emph{D}-, 
+The optimality criteria \eqn{\Phi(\cdot)} supported by \code{$optimize()}, \code{$augment()} and \code{$sparsify()} are: \emph{D}-,
 \emph{A}-, \emph{I}-, \emph{G}-, and \emph{alias}-optimality, see \link{lm_design} for the definitions.
 }
 
@@ -77,8 +77,9 @@ data <- expand.grid(
 )
 ## initialize model, nominal parameters and design grid
 design <- nlm_design$new(
-  formula = ~b1/(b2 + x1) + b3 * x2 + b4 * x2^2 + b5 * x2^3 + (b6 * x2 + b7 * x2^3) * exp(-x1/(b8 + b9 * x2^2)),
-  theta = c(b1 = 1054.541, b2 = 206.546, b3 = 1.46, b4 = -0.26, 
+  formula = ~b1/(b2 + x1) + b3 * x2 + b4 * x2^2 + b5 * x2^3 +
+              (b6 * x2 + b7 * x2^3) * exp(-x1/(b8 + b9 * x2^2)),
+  theta = c(b1 = 1054.541, b2 = 206.546, b3 = 1.46, b4 = -0.26,
             b5 = 0.023, b6 = 0.401, b7 = 0.035, b8 = 57.405, b9 = -0.477),
   data = data
 )
@@ -558,10 +559,10 @@ can be evaluated by \code{$formula}.}
   Calculates the correlation matrix of the columns of the Jacobian matrix based on an approximate or rounded (exact) design \eqn{(w_1, \ldots, w_n)} according to:
 \deqn{R \ = \ D^{-1/2}(J_c^T \Omega J_c)D^{-1/2}}
 where \eqn{\Omega} is \eqn{\mathrm{diag}(\omega_1, \ldots, \omega_n)} with \eqn{\omega_i = w_i v_i}, and \eqn{J_c} is the Jacobian matrix \eqn{J = F(X, \theta)} centered by the (weighted)
-column means: 
+column means:
 \deqn{\frac{\sum_{i=1}^n \omega_i J_{ij}}{\sum_{i=1}^n \omega_i}, \quad j = 1,\ldots, p}
-Furthermore, \eqn{D^{-1/2}} is \eqn{\mathrm{diag}(1/\sqrt{D_1},\ldots, 1/\sqrt{D_p})}, with \eqn{D_1,\ldots,D_p} the diagonal elements of \eqn{J_c^T \Omega J_c}. 
-If \code{center = FALSE}, the uncentered correlation matrix is returned, which corresponds to the scale-invariant (unit diagonal) version of the information matrix \eqn{M(w | X, v, \theta)}. 
+Furthermore, \eqn{D^{-1/2}} is \eqn{\mathrm{diag}(1/\sqrt{D_1},\ldots, 1/\sqrt{D_p})}, with \eqn{D_1,\ldots,D_p} the diagonal elements of \eqn{J_c^T \Omega J_c}.
+If \code{center = FALSE}, the uncentered correlation matrix is returned, which corresponds to the scale-invariant (unit diagonal) version of the information matrix \eqn{M(w | X, v, \theta)}.
 The design weights are initialized from the \code{design_weights} field, which is the optimal (approximate) design calculated by \code{$optimize()}.
 To override the default approximate (optimal) design weights, a vector of design weights can be passed using the \code{design_weights} argument.
 The vector must be the same length as the number of design points in \code{data}.

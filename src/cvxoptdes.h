@@ -53,7 +53,6 @@ typedef struct
 SEXP R_scs_solve(SEXP J, SEXP f, SEXP ortho, SEXP strata, SEXP zeros, SEXP Xzero, SEXP colmeans, SEXP env, SEXP w0, SEXP K, SEXP v_sca, SEXP start, SEXP ctrl_int, SEXP ctrl_dbl);
 
 // criteria.c
-
 void D_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_int mtot, scs_int ntot, double alpha, double lambda, double gamma, double upr, scs_int nlvls, R_len_t z_ortho, R_len_t q_ortho, R_len_t mzeros, R_len_t mmeans);
 void D_opt_populate_K(pdata *pars, R_len_t p, R_len_t n, double upr, scs_int nlvls, R_len_t z_ortho, R_len_t qsize, R_len_t mzeros, R_len_t mmeans, double lambda, R_len_t blocks);
 void D_spec_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_int mtot, scs_int ntot, double alpha, double lambda, double gamma, double upr, scs_int nlvls, R_len_t z_ortho, R_len_t q_ortho, R_len_t mzeros, R_len_t mmeans);
@@ -82,6 +81,6 @@ SEXP crit_impl(SEXP M_in, SEXP X_in, SEXP XtX_in, SEXP crit_in, SEXP return_tran
 
 // highs.c
 SEXP R_highs_solve(SEXP L, SEXP lwr, SEXP upr, SEXP A, SEXP lhs, SEXP rhs, SEXP types, SEXP maximum, SEXP offset, SEXP ctrl_dbl, SEXP ctrl_int, SEXP ctrl_bool, SEXP ctrl_str, SEXP write_mps);
-SEXP R_highs_available();
+SEXP R_highs_available(SEXP null);
 
 #endif

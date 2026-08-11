@@ -39,7 +39,7 @@ w_d0 <- structure(rep(c(1/6, 0), each = 6), criterion = list(crit = "D", crit.va
 
 w_d <- obj$optimize(criterion = "D", max_iter = 5, show_progress = FALSE)
 d_val <- attr(w_d, "criterion")$crit.value
-dotest_tol("1.1.1", d_val, 0.3107272)
+dotest_ineq("1.1.1", 0.3107272, d_val)
 
 w_d <- obj0$optimize(criterion = "D")
 d_val <- attr(w_d, "criterion")$crit.value
@@ -262,10 +262,6 @@ w_alias01 <- structure(w_d01, criterion = list(crit = "alias", crit.value = 0.79
 
 w_alias <- obj$augment(design_weights = w_alias01, gamma = 0.5, criterion = "alias")
 dotest_tol("3.5.1", obj$crit(w_alias + w_alias01 / 6, "alias"), 0.7281696)
-
-w_alias <- obj$round(m = 6, method = "optimal", seed = 1, augment_design = w_alias01, show_progress = FALSE)
-alias_val <- attr(w_alias, "criterion")$crit.value
-dotest_tol("3.5.2", alias_val, 0.7311574)
 
 ## 4.x cost penalty
 

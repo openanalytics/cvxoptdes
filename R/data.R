@@ -12,7 +12,7 @@
 #'   \item{product_amount}{numeric, mole fraction of the desired product}
 #' }
 #'
-#' @source \href{https://github.com/aspuru-guzik-group/olympus/tree/main/src/olympus/datasets/dataset_fullerenes}{Olympus: Fullerenes dataset}
+#' @source \href{https://github.com/the-matter-lab/olympus/tree/main/src/olympus/datasets/dataset_fullerenes}{Olympus: Fullerenes dataset}
 "fullerenes"
 
 #' Imidazoles dataset
@@ -36,8 +36,8 @@
 #'   \item{ligand_smiles}{character, SMILES string of the reaction ligand molecule}
 #' }
 #'
-#' @source \href{https://doi.org/10.1038/s41586-021-03213-y}{https://doi.org/10.1038/s41586-021-03213-y}
-#' @source \href{https://doi.org/10.1021/jacs.2c08592}{https://doi.org/10.1021/jacs.2c08592}
+#' @source \doi{doi:10.1038/s41586-021-03213-y}
+#' @source \doi{doi:10.1021/jacs.2c08592}
 #' @references Shields B.J. et al. (2021) \emph{“Bayesian reaction optimization as a tool for chemical synthesis”}, Nature, Vol. 590 (7844).
 #' @references Torres J.A.G. et al. (2022) \emph{“A Multi-Objective Active Learning Platform and Web App for Reaction Optimization”}, J. Am. Chem. Soc., Vol. 144 (43).
 "imidazoles"

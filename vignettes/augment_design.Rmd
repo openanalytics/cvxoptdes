@@ -2,7 +2,7 @@
 title: "Optimal design augmentation"
 output:
   rmarkdown::html_vignette
-date: "2026-08-04"
+date: "2026-08-11"
 vignette: >
   %\VignetteIndexEntry{Optimal design augmentation}
   %\VignetteEngine{knitr::rmarkdown}
@@ -232,7 +232,7 @@ design$augment(design_weights = init_design, gamma = 0.4, criterion = "D") |> ro
 #> [59] 0.00 0.00 0.00 0.00 0.00 0.00
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.9738337
+#> [1] 0.9738338
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -253,7 +253,7 @@ For the calculation of an exact D-optimal augmented design, the `$round()` metho
 #> [1] 0.9480523
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9735258
+#> [1] 0.9735257
 
 ## proposed design points
 data[augment_design - init_design > 0, ]
@@ -294,7 +294,7 @@ design_ortho$augment(design_weights = init_design, gamma = 0.4, criterion = "D",
 #> [1] 0.869514
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9072305
+#> [1] 0.9072304
 
 ## proposed design points
 data[ortho_augment_design - init_design > 0, ]
@@ -361,10 +361,10 @@ init_design <- design$round(m = 5, method = "optimal", seed = 1)
 fullerenes[init_design > 0, ]
 #>     reaction_time sultine_conc temperature product_amount
 #> 1               3          1.5         100      0.5247368
-#> 5               3          1.5         140      0.9190989
-#> 19              3          6.0         100      0.8364682
+#> 24              3          6.0         150      0.5414205
 #> 97             31          1.5         100      0.9078710
-#> 120            31          6.0         150      0.4478669
+#> 101            31          1.5         140      0.9301938
+#> 115            31          6.0         100      0.8492748
 ```
 
 <div class="figure">
@@ -398,21 +398,21 @@ for(i in 1:n_iter) {
 ## proposed design points
 fullerenes[tail(design_points, 3 * n_iter), ]
 #>     reaction_time sultine_conc temperature product_amount
-#> 93             24          6.0         120      0.5839802
-#> 111            31          4.5         120      0.7063200
-#> 117            31          6.0         120      0.5778373
-#> 18              3          4.5         150      0.6743638
-#> 60             17          3.0         150      0.8345172
-#> 115            31          6.0         100      0.8492748
-#> 52             17          1.5         130      0.9266864
-#> 61             17          4.5         100      0.9450543
 #> 102            31          1.5         150      0.9291388
-#> 46             10          6.0         130      0.5710976
-#> 54             17          1.5         150      0.9205931
-#> 106            31          3.0         130      0.8720959
+#> 108            31          3.0         150      0.8234756
+#> 114            31          4.5         150      0.6000956
+#> 11              3          3.0         140      0.8758207
+#> 38             10          4.5         110      0.9200592
+#> 53             17          1.5         140      0.9231086
+#> 19              3          6.0         100      0.8364682
+#> 60             17          3.0         150      0.8345172
+#> 94             24          6.0         130      0.5393941
 #> 6               3          1.5         150      0.9151403
-#> 9               3          3.0         120      0.9298701
-#> 55             17          3.0         100      0.9430810
+#> 61             17          4.5         100      0.9450543
+#> 105            31          3.0         120      0.8803160
+#> 15              3          4.5         120      0.9150609
+#> 52             17          1.5         130      0.9266864
+#> 103            31          3.0         100      0.9501030
 ```
 
 <div class="figure">
@@ -481,15 +481,15 @@ for(i in 1:n_iter) {
 
 ## proposed design points
 fullerenes[tail(design_points, 2 * n_iter), ]
-#>    reaction_time sultine_conc temperature product_amount
-#> 43            10          6.0         100      0.9365720
-#> 51            17          1.5         120      0.9327177
-#> 69            17          6.0         120      0.5988890
-#> 79            24          3.0         100      0.9458114
-#> 4              3          1.5         130      0.9176888
-#> 99            31          1.5         120      0.9312865
-#> 37            10          4.5         100      0.9489801
-#> 57            17          3.0         120      0.8922299
+#>     reaction_time sultine_conc temperature product_amount
+#> 51             17          1.5         120      0.9327177
+#> 115            31          6.0         100      0.8492748
+#> 69             17          6.0         120      0.5988890
+#> 104            31          3.0         110      0.9285359
+#> 4               3          1.5         130      0.9176888
+#> 100            31          1.5         130      0.9287316
+#> 12              3          3.0         150      0.8460904
+#> 57             17          3.0         120      0.8922299
 ```
 
 The first figure below displays the final design of size $m = 20$ after 4 design augmentations of size 2, with the number inside each tile referring to the iteration at which the design point was proposed (0 corresponding to the initial design). The second figure displays the predicted response surface obtained by fitting a GAM with $k = m = 20$ basis functions to the final design. The predicted response surface is more accurate than in the previous example, which is mainly due to the additional flexibility of the generalized additive model compared to a (parametric) full quadratic model.
@@ -516,7 +516,7 @@ $$
 
 where $\Delta_{\epsilon}(\boldsymbol{x}) = \{ \boldsymbol{x}' - \boldsymbol{x} : d(\boldsymbol{x}', \boldsymbol{x}) \leq \epsilon \}$ is a ball around $\boldsymbol{x}$ with radius $\epsilon$. This is equivalent to the robust optimization objective described by [@B18] in the context of Bayesian optimization with UCB acquisition.
 
-To implement this robust objective, we revise the approach from the previous section by assigning costs based on the *minimum* predicted yield in a small neighborhood of each design point. As a neighborhood, we consider a deviation in temperature of 10°C, a deviation in reaction time of 7 minutes and zero deviation in the sultine ratio. Projected to the design grid, this corresponds to a $3 \times 3$ square of neighboring design points along the temperature and reaction time axes. Reusing the full quadratic linear model from the first example, we start from an initial D-optimal design of size $m_0 = 10$ and augment the design 5 times, each time by a single design point. We also increase the cost scaling parameter `alpha` putting more weight on optimization of the robustness objective (*exploitation*) and less on minimizing the D-criterion value (*exploration*).
+To implement this robust objective, we revise the approach from the previous section by assigning costs based on the *minimum* predicted yield in a small neighborhood of each design point. As a neighborhood, we consider a deviation in temperature of 10°C, a deviation in reaction time of 7 minutes and zero deviation in the sultine ratio. Projected to the design grid, this corresponds to a $3 \times 3$ square of neighboring design points along the temperature and reaction time axes. Reusing the full quadratic linear model from the first example, we start from an initial I-optimal design of size $m_0 = 10$ and augment the design 5 times, each time by a single design point. We also increase the cost scaling parameter `alpha` putting more weight on optimization of the robustness objective (*exploitation*) and less on minimizing the I-criterion value (*exploration*).
 
 
 ``` r
@@ -535,9 +535,9 @@ predict_min <- function(fit, newdata, eps = c(7, 0, 10)) {
 design <- lm_design$new(
   formula = ~(temperature + reaction_time + sultine_conc)^2 + I(temperature^2) + I(reaction_time^2) + I(sultine_conc^2),
   data = apply(fullerenes[, -4], 2, scale),  ## standardized data columns
-  alpha = 0.1                                ## cost scaling parameter
+  alpha = 1                                  ## cost scaling parameter
 )
-design$optimize(criterion = "D", return_value = FALSE)
+design$optimize(criterion = "I", return_value = FALSE)
 init_design <- design$round(m = 10, method = "optimal", seed = 1)
 
 n_iter <- 5
@@ -549,7 +549,7 @@ for(i in 1:n_iter) {
   fit <- lm(update(design$formula, product_amount ~ .), data = fullerenes[design_points, ])
   design$update(cost = 1 - predict_min(fit, newdata = fullerenes))
   ## augment design
-  design$augment(design_weights = design_weights, criterion = "D", return_value = FALSE)
+  design$augment(design_weights = design_weights, criterion = "I", return_value = FALSE)
   ## add point w/ highest weight
   design_points <- c(design_points, setdiff(order(design$design_weights, decreasing = TRUE), design_points)[1])
   design_weights[design_points] <- 1 / length(design_points)
@@ -558,11 +558,11 @@ for(i in 1:n_iter) {
 ## proposed design points
 fullerenes[tail(design_points, n_iter), ]
 #>     reaction_time sultine_conc temperature product_amount
-#> 102            31          1.5         150      0.9291388
-#> 120            31          6.0         150      0.4478669
-#> 6               3          1.5         150      0.9151403
-#> 103            31          3.0         100      0.9501030
-#> 49             17          1.5         100      0.8574359
+#> 7               3          3.0         100      0.6792475
+#> 101            31          1.5         140      0.9301938
+#> 104            31          3.0         110      0.9285359
+#> 52             17          1.5         130      0.9266864
+#> 100            31          1.5         130      0.9287316
 ```
 
 <div class="figure">

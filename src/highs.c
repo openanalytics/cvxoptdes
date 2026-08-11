@@ -121,7 +121,7 @@ static void set_highs_options(void *highs, SEXP ctrl, int type)
     UNPROTECT(1);
 }
 
-SEXP R_highs_available()
+SEXP R_highs_available(SEXP null)
 {
     return Rf_ScalarLogical(TRUE);
 }
@@ -321,7 +321,7 @@ static SEXP C_highs_solve(void *data)
 
 #else
 
-SEXP R_highs_available()
+SEXP R_highs_available(SEXP null)
 {
     return Rf_ScalarLogical(FALSE);
 }

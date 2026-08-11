@@ -929,8 +929,9 @@ lme_design <- R6Class(
     #' especially when \code{n_repeats} is small or the rounding/exchange algorithm does not take much time to complete.
     #' }
     #'
-    #' @param m integer whole plot size. The number of design points per level of the whole plot factor(s). The total number of design points included in
-    #' the split-plot design is \code{m} times the number of whole plot levels.
+    #' @param m integer whole plot size(s). If a single integer, the number of design points per level of the whole plot factor(s) is set equal to \code{m}, i.e.
+    #' the total number of design points in the split-plot design is \code{m} times the number of whole plot levels.
+    #' If a vector, the length of \code{m} must be the same as the number of whole plot levels, with the elements of \code{m} specifying the sizes of the individual whole plots.
     #' @param hard_to_change hard-to-change \link{factor} variable of the same length as the number of rows in \code{data}. Also accepts
     #' a one-sided \link{formula} made up of column names present in \code{data}, in which case the factor levels are defined by the \link{interaction}
     #' between terms in the \link{model.frame} obtained from the \link{formula}.
@@ -980,7 +981,7 @@ lme_design <- R6Class(
       }
       stopifnot(
         is.numeric(design_weights), length(design_weights) == nrow(private$.X),
-        is.numeric(m), length(m) == 1, m > 0,
+        is.numeric(m),
         is.numeric(tol), length(tol) == 1, tol > 0,
         is.numeric(max_iter), length(max_iter) == 1, max_iter > 0
       )
@@ -995,7 +996,14 @@ lme_design <- R6Class(
       }
       mw <- as.integer(nrow(private$Zt))
       wsize <- as.integer(m)
-      m <- mw * wsize
+      if(length(m) > 1) {
+        stopifnot(all(m >= 0), any(m > 0))
+        m <- sum(wsize)
+      } else {
+        stopifnot(m > 0)
+        m <- mw * wsize
+        wsize <- rep(wsize, mw)
+      }
       max_iter <- as.integer(max_iter)
       n_repeats <- as.integer(n_repeats)
       if(!is.null(self$weights)) {
@@ -1039,7 +1047,7 @@ lme_design <- R6Class(
         hard_to_change <- NULL
         strata <- list(
           strata = factor(Zind),
-          proportions = rep(wsize, times = max(Zind))
+          proportions = wsize
         )
       }
       w_opt <- NULL
@@ -1518,7 +1526,7 @@ M_approx_impl <- function(w, sca_terms) {
   return(M)
 }
 
-sample_strata_impl <- function(strata, Zind, wsize) {
+sample_strata_impl <- function(strata, Zind) {
   prop <- sample.int(
     n = length(strata$proportions),
     size = max(Zind),
@@ -1530,7 +1538,6 @@ sample_strata_impl <- function(strata, Zind, wsize) {
   blocks <- factor(blocks, levels = levels(strata$strata))
   indices <- which(strata$strata == blocks[Zind])
   strata <- list(strata = interaction(strata$strata[indices], Zind[indices], drop = TRUE))
-  strata$proportions <- rep(wsize, nlevels(strata$strata))
   return(list(strata = strata, indices = indices))
 }
 
@@ -1540,8 +1547,7 @@ init_split_plot_strata <- function(design_weights, X, Zind, m, wsize, supp_tol, 
   if(!is.null(hard_to_change)) {
     strata_n <- sample_strata_impl(
       strata = strata,
-      Zind = Zind,
-      wsize = wsize
+      Zind = Zind
     )
   } else {
     strata_n <- list(
@@ -1549,6 +1555,7 @@ init_split_plot_strata <- function(design_weights, X, Zind, m, wsize, supp_tol, 
       indices = seq_len(nrow(X))
     )
   }
+  strata_n$strata$proportions <- wsize
   X_n <- X[strata_n$indices, , drop = FALSE]
   design_weights_n <- design_weights[strata_n$indices]
   if(upper < 1 && nrow(X_n) * max(floor(m * upper), 1) < m) {

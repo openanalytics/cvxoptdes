@@ -20,9 +20,9 @@ A data.frame containing 1728 experiments with columns:
 }
 }
 \source{
-\href{https://doi.org/10.1038/s41586-021-03213-y}{https://doi.org/10.1038/s41586-021-03213-y}
+\doi{doi:10.1038/s41586-021-03213-y}
 
-\href{https://doi.org/10.1021/jacs.2c08592}{https://doi.org/10.1021/jacs.2c08592}
+\doi{doi:10.1021/jacs.2c08592}
 }
 \usage{
 imidazoles

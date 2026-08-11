@@ -1,8 +1,8 @@
 PKGNAME=cvxoptdes
 PKGVERS=$(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 
-.PHONY: doc vignette vignette-mkl readme manual globals test test-mkl covr build install install-mkl check \
-    packamon docker docker-check docker-test pkgdocs-build pkgdocs-hugo pkgdocs-hugo-serve pkgdocs-server
+.PHONY: doc vignette vignette-mkl readme manual globals test test-mkl covr build build-no-vignettes \
+    install install-mkl check check-cran check-no-vignettes packamon docker docker-check docker-test docker-manual
 
 all: doc check clean
 
@@ -49,6 +49,9 @@ install-mkl:
 check: build
 	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz
 
+check-cran: build
+	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz --as-cran
+
 check-no-vignettes: build-no-vignettes
 	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz
 
@@ -63,6 +66,9 @@ docker-check:
 
 docker-test:
 	docker run -it --rm $(PKGNAME):$(PKGVERS) Rscript -e "lapply(list.files(system.file(\"unit_tests\", package = \"$(PKGNAME)\"), full.names=TRUE), source, local=TRUE)"
+
+docker-manual:
+	docker run -it --user $(shell id -u):$(shell id -g) --rm -v $(PWD):/$(PKGNAME) -w /$(PKGNAME) rd2pdf:latest R CMD Rd2pdf . --force --no-preview
 
 clean:
 	$(RM) -r $(PKGNAME).Rcheck/

@@ -242,11 +242,15 @@ design_ortho$update(
   )
 )
 ## approximate augmented design
-design_ortho$augment(design_weights = init_design, gamma = 0.4, criterion = "D", return_value = FALSE)
+design_ortho$augment(
+  design_weights = init_design, gamma = 0.4, criterion = "D", return_value = FALSE
+)
 
 if(FALSE) {
   ## integer design w/ orthogonality constraints
-  (ortho_augment_design <- design_ortho$round(m = 8, method = "orthogonal", augment_design = init_design))
+  ortho_augment_design <- design_ortho$round(
+    m = 8, method = "orthogonal", augment_design = init_design
+  )
   ## verify correlations
   design_ortho$corr(ortho_augment_design)
 }

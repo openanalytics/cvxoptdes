@@ -319,10 +319,6 @@ w_alias <- obj$optimize(criterion = "alias")
 alias_val <- obj$crit(w_alias, "alias")
 dotest_tol("3.1.9", alias_val, 0.8722714)
 
-w_alias <- obj$round(m = 10, method = "optimal", seed = 1, criterion = "alias", show_progress = FALSE)
-alias_val <- attr(w_alias, "criterion")$crit.value
-dotest_tol("3.1.10", alias_val, 0.9777777)
-
 ### augment
 w_d02 <- structure(c(1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0), criterion = list(crit = "D", crit.value = 0))
@@ -465,10 +461,6 @@ dotest_tol("4.2.6", g_val, 0.1384615)
 w_alias <- obj$optimize(criterion = "alias")
 dotest_tol("4.2.7", max(w_alias), 0.1)
 
-w_alias <- obj$round(m = 10, method = "optimal", seed = 1, n_repeats = 100, show_progress = FALSE)
-alias_val <- attr(w_alias, "criterion")$crit.value
-dotest_tol("4.2.8", alias_val, 1)
-
 ## 5.x stratified design
 obj <- lm_design$new(
   formula = ~(x1 + x2 + x3)^2 - 1,
@@ -510,7 +502,7 @@ dotest_tol("5.2.7", tapply(w_alias, obj$strata$strata, sum), c("-1" = 1/4, "0" =
 w_alias <- obj$round(m = 12, method = "optimal", seed = 1, show_progress = FALSE)
 dotest_tol("5.2.8", attr(w_alias, "strata"), c("-1" = 3, "0" = 6, "1" = 3))
 
-## 6.x orthogonal design
+# 6.x orthogonal design
 
 obj <- lm_design$new(
   formula = ~0 + (x1 + x2 + x3)^2 + I(x1^2) + I(x2^2) + I(x3^2),

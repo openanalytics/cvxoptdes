@@ -2,7 +2,7 @@
 title: "Linear model optimal design"
 output:
   rmarkdown::html_vignette
-date: "2026-08-04"
+date: "2026-08-11"
 vignette: >
   %\VignetteIndexEntry{Linear model optimal design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -93,7 +93,7 @@ a number of repeated point-exchange procedures are executed to find an optimal e
 #> [1] 1.84352
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9713409
+#> [1] 0.9713408
 ```
 
 Since the point-exchange algorithm is initialized from (a rounded version
@@ -247,7 +247,7 @@ design$optimize(criterion = "G") |> round(2)
 #> [59] 0.00 0.00 0.03 0.00 0.00 0.00 0.03 0.00 0.00 0.00 0.00 0.00 0.06 0.00 0.03 0.00 0.06
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.09999972
+#> [1] 0.09999764
 #> 
 #> attr(,"criterion")$crit
 #> [1] "G"
@@ -271,7 +271,7 @@ design$optimize(criterion = "alias", scs_control = list(eps_rel = 1e-3)) |> roun
 #> [59] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.12 0.00 0.00 0.00 0.12
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.8684432
+#> [1] 0.8684438
 #> 
 #> attr(,"criterion")$crit
 #> [1] "alias"
@@ -286,7 +286,7 @@ As demonstrated in the initial example, the `$round()` method is used to round a
 
 ``` r
 (exact_design <- design$round(m = 16, method = "optimal", criterion = "I", design_weights = design_weights, n_repeats = 100, seed = 1))
-#>  [1] 0 1 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0
+#>  [1] 1 0 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 1
 #> [74] 0 1
 #> attr(,"criterion")
 #> attr(,"criterion")$crit
@@ -322,7 +322,7 @@ the size of the support of the approximate design.
 #> [1] 1.866278
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9833318
+#> [1] 0.9833317
 ```
 
 <img src="figures/lm_design-4-1.png" alt="" width="70%" />
@@ -343,8 +343,8 @@ number of candidate design points, i.e. $m \ll n$.
 
 ``` r
 (dist1_design <- design$round(m = 14, method = "dist-sum", seed = 1))
-#>  [1] 1 0 0 0 2 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 2 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0
-#> [74] 0 2
+#>  [1] 2 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 2 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 2 0 0
+#> [74] 0 1
 #> attr(,"criterion")
 #> attr(,"criterion")$crit
 #> [1] "dist-sum"
@@ -361,7 +361,7 @@ number of candidate design points, i.e. $m \ll n$.
 
 ``` r
 (dist2_design <- design$round(m = 12, method = "dist-min", seed = 1))
-#>  [1] 1 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1
+#>  [1] 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 1 0 0
 #> [74] 0 1
 #> attr(,"criterion")
 #> attr(,"criterion")$crit
@@ -445,7 +445,7 @@ design$optimize(criterion = "D") |> round(2)
 #> [59] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.04 0.00 0.00 0.00 0.04
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 1.488569
+#> [1] 1.488571
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -460,7 +460,7 @@ penalty term, use the `$crit()` method with `alpha = FALSE`. By default, the cri
 
 ``` r
 design$crit(criterion = "D", alpha = FALSE)
-#> [1] 1.722713
+#> [1] 1.722715
 ```
 
 Similarly, weights $\boldsymbol{v} = (v_1, \ldots, v_n)'$ can be added to the 
@@ -485,7 +485,7 @@ design$optimize(criterion = "D") |> round(2)
 #> [59] 0.00 0.00 0.05 0.00 0.06 0.00 0.05 0.00 0.00 0.00 0.00 0.00 0.08 0.00 0.05 0.00 0.08
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.6481387
+#> [1] 0.6481385
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -516,7 +516,7 @@ into account and the rounded designs are the same with or without assigned costs
 #> [1] 0.6355939
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.980645
+#> [1] 0.9806452
 ```
 
 <img src="figures/lm_design-9-1.png" alt="" width="70%" />
@@ -570,7 +570,7 @@ design$optimize(criterion = "D") |> round(2)
 #> [59] 0.00 0.00 0.01 0.00 0.00 0.00 0.01 0.00 0.00 0.00 0.00 0.00 0.05 0.00 0.01 0.00 0.05
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 1.739443
+#> [1] 1.739441
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -603,8 +603,8 @@ by the number of requested design points (`m`) are all integer.
 ``` r
 ## optimal rounding w/ stratification
 (exact_design <- design$round(m = 12, method = "optimal", seed = 1))
-#>  [1] 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 1 0 0 0 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
-#> [74] 0 0
+#>  [1] 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 0 0 0 1 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0
+#> [74] 0 1
 #> attr(,"criterion")
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -613,7 +613,7 @@ by the number of requested design points (`m`) are all integer.
 #> [1] 1.58603
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9118032
+#> [1] 0.9118043
 #> 
 #> attr(,"strata")
 #> -1  0  1 
@@ -691,7 +691,7 @@ design$optimize(criterion = "D") |> round(2)
 #> [59] 0.00 0.00 0.03 0.00 0.00 0.00 0.03 0.00 0.00 0.00 0.00 0.00 0.06 0.00 0.03 0.00 0.06
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 1.897912
+#> [1] 1.897913
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -729,7 +729,7 @@ design$sparsify(max_iter = 5, criterion = "D", reweight_fun = "entropy") |> roun
 #> [1] "D"
 #> 
 #> attr(,"criterion")$crit.value
-#> [1] 1.592362
+#> [1] 1.592373
 ```
 
 <img src="figures/lm_design-13-1.png" alt="" width="70%" />
@@ -763,7 +763,7 @@ by solving a mixed-integer linear problem (MILP) using the open-source
 
 ``` r
 (ortho_design <- design$round(m = 8, method = "orthogonal", seed = 1, highs_control = list(log_to_console = FALSE)))
-#>  [1] 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0
+#>  [1] 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1
 #> [74] 0 0
 #> attr(,"criterion")
 #> attr(,"criterion")$crit
@@ -786,12 +786,12 @@ design$corr(ortho_design) |> round(3)
 #> x1       1  0  0   0.000   0.000   0.000  0.000  0.000  0.000
 #> x2       0  1  0   0.000   0.000   0.000  0.000  0.000  0.000
 #> x3       0  0  1   0.000   0.000   0.000  0.000  0.000  0.000
-#> I(x1^2)  0  0  0   1.000  -0.333  -0.333  0.000  0.000  0.816
-#> I(x2^2)  0  0  0  -0.333   1.000  -0.333  0.000 -0.816  0.000
+#> I(x1^2)  0  0  0   1.000  -0.333  -0.333  0.000  0.000 -0.816
+#> I(x2^2)  0  0  0  -0.333   1.000  -0.333  0.000  0.816  0.000
 #> I(x3^2)  0  0  0  -0.333  -0.333   1.000 -0.816  0.000  0.000
-#> x1:x2    0  0  0   0.000   0.000  -0.816  1.000  0.500 -0.500
-#> x1:x3    0  0  0   0.000  -0.816   0.000  0.500  1.000 -0.500
-#> x2:x3    0  0  0   0.816   0.000   0.000 -0.500 -0.500  1.000
+#> x1:x2    0  0  0   0.000   0.000  -0.816  1.000 -0.500  0.500
+#> x1:x3    0  0  0   0.000   0.816   0.000 -0.500  1.000 -0.500
+#> x2:x3    0  0  0  -0.816   0.000   0.000  0.500 -0.500  1.000
 ```
 
 ### Higher-dimensional orthogonal designs

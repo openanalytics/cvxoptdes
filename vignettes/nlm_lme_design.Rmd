@@ -2,7 +2,7 @@
 title: "Nonlinear/Linear mixed model optimal design"
 output:
   rmarkdown::html_vignette
-date: "2026-08-04"
+date: "2026-08-11"
 vignette: >
   %\VignetteIndexEntry{Nonlinear/Linear mixed model optimal design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -108,7 +108,7 @@ To round the approximate I-optimal design to an exact (integer) design with a gi
 #> [1] 0.1644273
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9286403
+#> [1] 0.92864
 ```
 
 <div class="figure">
@@ -140,7 +140,7 @@ design$optimize(criterion = "I") |> round(2)
 #> [146] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.04 0.00 0.00 0.07 0.00 0.00 0.00 0.00 0.00 0.00 0.06
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.09436276
+#> [1] 0.09436277
 #> 
 #> attr(,"criterion")$crit
 #> [1] "I"
@@ -170,7 +170,7 @@ If cost penalties are present in the `$cost` field, these are passed down to the
 #> [1] 0.08771622
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.929564
+#> [1] 0.9295639
 ```
 
 <div class="figure">
@@ -242,7 +242,7 @@ If stratification constraints are present in the `$strata` field, these are pass
 #> [1] 0.1362853
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.946042
+#> [1] 0.9460417
 #> 
 #> attr(,"strata")
 #>   0  20  40 100 
@@ -332,17 +332,17 @@ design <- lme_design$new(
 )
 ```
 
-The two-part model `formula` must always be of the form `~ fix.eff ~ ran.eff`, where `fix.eff` is a linear model formula encoding the fixed effects design matrix and `ran.eff` is an expression encoding the random effects levels. `ran.eff` is evaluated as a *factor*, with the factor levels determining the random effects groups. Using [`lme4`](https://cran.r-project.org/web/packages/lme4/index.html)'s formula syntax, the two-part formula would be equivalent to `~(1 | Block) + Treatment + I(Treatment^2)`.
+The two-part model `formula` must always be of the form `~ fix.eff ~ ran.eff`, where `fix.eff` is a linear model formula encoding the fixed effects design matrix and `ran.eff` is an expression encoding the random effects levels. `ran.eff` is evaluated as a *factor*, with the factor levels determining the random effects groups. Using [`lme4`](https://CRAN.R-project.org/package=lme4)'s formula syntax, the two-part formula would be equivalent to `~(1 | Block) + Treatment + I(Treatment^2)`.
 
 Compared to `lm_design` and `nlm_design`, the `$optimize()` method requires an additional `max_iter` argument that specifies the number of iterations in the SCA procedure:
 
 
 ``` r
 design$optimize(criterion = "D", max_iter = 10) |> round(2)
-#>  [1] 0.03 0.03 0.03 0.03 0.03 0.03 0.14 0.14 0.14 0.14 0.13 0.14
+#>  [1] 0.03 0.03 0.03 0.03 0.03 0.03 0.14 0.14 0.14 0.14 0.14 0.14
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.3111289
+#> [1] 0.3111273
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -369,7 +369,7 @@ design$round(m = 6, method = "optimal", seed = 1)
 #> [1] 0.2814851
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9047216
+#> [1] 0.9047262
 ```
 
 #### Split-plot optimal design
@@ -460,9 +460,67 @@ design$crit(exact_design, criterion = "D") / design$crit(doe1_design, criterion 
 As an additional comparison, we can evaluate the prediction variances under the two split-plot designs across the candidate design grid using the `$sep()` method, which allows to build a *fraction of the design space* plot visualizing the quantiles of the prediction variance distribution across the design space, see e.g. [@GJ11, Ch. 4].
 
 <div class="figure">
-<img src="figures/lme_design-1-1.png" alt="Split-plot design fraction of design space plot." width="100%" />
-<p class="caption">Split-plot design fraction of design space plot.</p>
+<img src="figures/lme_design-1-1.png" alt="Split-plot design fraction of design space plot" width="100%" />
+<p class="caption">Split-plot design fraction of design space plot</p>
 </div>
+
+In the case study in [@OM25] there is one additional week (week 2) containing a public holiday during which only two runs are feasible. Instead of a single common whole plot size $m$, `$round_split_plot()` also accepts a vector $m$ of individual whole plot sizes. If $m$ is a vector, it must be the same length as the number of levels in the hard-to-change factor `A`:
+
+
+``` r
+## append data w/ 1 extra week
+data_8weeks <- transform(design$data, week = factor(week, levels = 1:8))
+data_8weeks <- rbind(data_8weeks, transform(subset(design$data, week == 1), week = 8))
+
+design_8weeks <- design$clone()
+design_8weeks$update(data = data_8weeks)
+```
+
+
+``` r
+design_8weeks$optimize(criterion = "D", max_iter = 5, return_value = FALSE) 
+
+mirai::daemons(n = parallel::detectCores() / 2, seed = 1)
+
+exact_8weeks <- design_8weeks$round_split_plot(
+  m = c(3, 2, 3, 3, 3, 3, 3, 3),          ## non-equal whole plot sizes                  
+  hard_to_change = ~A,
+  n_repeats = 1000
+)
+
+mirai::daemons(0)
+```
+
+
+
+
+``` r
+data_8weeks[exact_8weeks > 0, ]
+#>      A  B  C  D week
+#> 21   1 -1  1 -1    1
+#> 60   1  0 -1  1    1
+#> 75   1 -1  1  1    1
+#> 82  -1 -1 -1 -1    2
+#> 151 -1  1  0  1    2
+#> 214 -1  1  1  0    3
+#> 223 -1  1 -1  1    3
+#> 235 -1 -1  1  1    3
+#> 252  1  1 -1 -1    4
+#> 294  1  0  1  0    4
+#> 300  1 -1 -1  1    4
+#> 331 -1  1 -1 -1    5
+#> 343 -1 -1  1 -1    5
+#> 379 -1 -1 -1  1    5
+#> 408  1 -1 -1 -1    6
+#> 432  1  1  1 -1    6
+#> 477  1  1  0  1    6
+#> 500  0  0  0 -1    7
+#> 521  0  1 -1  0    7
+#> 566  0  1  1  1    7
+#> 592 -1  1  1 -1    8
+#> 604 -1 -1  0  0    8
+#> 643 -1  0  1  1    8
+```
 
 #### Penalized optimal design
 

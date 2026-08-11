@@ -521,8 +521,9 @@ The vector must be the same length as the number of design points in \code{data}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{m}}{integer whole plot size. The number of design points per level of the whole plot factor(s). The total number of design points included in
-the split-plot design is \code{m} times the number of whole plot levels.}
+      \item{\code{m}}{integer whole plot size(s). If a single integer, the number of design points per level of the whole plot factor(s) is set equal to \code{m}, i.e.
+the total number of design points in the split-plot design is \code{m} times the number of whole plot levels.
+If a vector, the length of \code{m} must be the same as the number of whole plot levels, with the elements of \code{m} specifying the sizes of the individual whole plots.}
       \item{\code{hard_to_change}}{hard-to-change \link{factor} variable of the same length as the number of rows in \code{data}. Also accepts
 a one-sided \link{formula} made up of column names present in \code{data}, in which case the factor levels are defined by the \link{interaction}
 between terms in the \link{model.frame} obtained from the \link{formula}.}

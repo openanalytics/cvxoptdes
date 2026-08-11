@@ -4,29 +4,23 @@ MKLROOT = @MKLROOT@
 HIGHS_HOME = @HIGHS_HOME@
 
 SCS_DIR = scs
-SCS_BUILD = $(SCS_DIR)/build
-LIB_DIR = $(SCS_BUILD)/lib
-LIB64_DIR = $(SCS_BUILD)/lib64
+LIB_DIR = $(SCS_DIR)/build/lib
+LIB64_DIR = $(SCS_DIR)/build/lib64
 SPECTRAL_CONES=ON
+
+PKG_CPPFLAGS = -I$(SCS_DIR)/include -DUSE_LAPACK -DCOPYAMATRIX
+PKG_LIBS =  $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 ifneq ($(strip $(MKLROOT)),)
 	## use MKL Pardiso solver
 	SCS_STATIC_LIB = $(shell if [ -f $(LIB64_DIR)/libscsmkl.a ]; then echo $(LIB64_DIR)/libscsmkl.a; else echo $(LIB_DIR)/libscsmkl.a; fi)
 	MKL_LIB_PATH = $(shell if [ -d $(MKLROOT)/lib/intel64 ]; then echo $(MKLROOT)/lib/intel64; else echo $(MKLROOT)/lib; fi)
-	PKG_CPPFLAGS = -I$(SCS_DIR)/include -I$(MKLROOT)/include -DUSE_LAPACK -DCOPYAMATRIX -DMKL_LP64
-	PKG_LIBS = $(SCS_STATIC_LIB) \
-			   -Wl,--start-group \
-               $(MKL_LIB_PATH)/libmkl_intel_lp64.a \
-               $(MKL_LIB_PATH)/libmkl_sequential.a \
-               $(MKL_LIB_PATH)/libmkl_core.a \
-               -Wl,--end-group \
-               -lgomp -lpthread -ldl \
-			   $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+	PKG_CPPFLAGS += -I$(MKLROOT)/include -DMKL_LP64
+	PKG_LIBS += $(SCS_STATIC_LIB) -L$(MKL_LIB_PATH) -lmkl_rt -lgomp -lpthread -ldl
 else
 	## use direct solver
 	SCS_STATIC_LIB = $(shell if [ -f $(LIB64_DIR)/libscsdir.a ]; then echo $(LIB64_DIR)/libscsdir.a; else echo $(LIB_DIR)/libscsdir.a; fi)
-	PKG_CPPFLAGS = -I$(SCS_DIR)/include -DUSE_LAPACK -DCOPYAMATRIX
-	PKG_LIBS = $(SCS_STATIC_LIB) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+	PKG_LIBS += $(SCS_STATIC_LIB)
 endif
 
 ifneq ($(strip $(HIGHS_HOME)),)
@@ -47,8 +41,10 @@ scs_build:
 		  $(if $(strip $(MKLROOT)), \
 				export MKLROOT="$(MKLROOT)" &&, \
 				unset MKLROOT &&) \
-			CC="$(CC)" CFLAGS="$(CFLAGS)" \
-			CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" \
+			CC="$(CC)" \
+			CFLAGS="$(CFLAGS) -DR_LANG -I\"$(R_INCLUDE_DIR)\"" \
+			CPPFLAGS="$(CPPFLAGS) -DR_LANG -I\"$(R_INCLUDE_DIR)\"" \
+			LDFLAGS="$(LDFLAGS)" \
 			$(CMAKE) -S . \
 				-B build \
 				-DCMAKE_BUILD_TYPE=Release \

@@ -237,7 +237,7 @@ round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), ze
   n <- length(w)
   w0 <- m * w
   p <- ncol(X)
-  highs_available <- .Call("R_highs_available", PACKAGE = "cvxoptdes")
+  highs_available <- .Call("R_highs_available", NULL, PACKAGE = "cvxoptdes")
   ## reduce problem size
   if(!is.null(n_supp)) {
     u <- range(w)

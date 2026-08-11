@@ -507,7 +507,7 @@ $$
 
 where $\Delta_{\epsilon}(\boldsymbol{x}) = \{ \boldsymbol{x}' - \boldsymbol{x} : d(\boldsymbol{x}', \boldsymbol{x}) \leq \epsilon \}$ is a ball around $\boldsymbol{x}$ with radius $\epsilon$. This is equivalent to the robust optimization objective described by [@B18] in the context of Bayesian optimization with UCB acquisition.
 
-To implement this robust objective, we revise the approach from the previous section by assigning costs based on the *minimum* predicted yield in a small neighborhood of each design point. As a neighborhood, we consider a deviation in temperature of 10°C, a deviation in reaction time of 7 minutes and zero deviation in the sultine ratio. Projected to the design grid, this corresponds to a $3 \times 3$ square of neighboring design points along the temperature and reaction time axes. Reusing the full quadratic linear model from the first example, we start from an initial D-optimal design of size $m_0 = 10$ and augment the design 5 times, each time by a single design point. We also increase the cost scaling parameter `alpha` putting more weight on optimization of the robustness objective (*exploitation*) and less on minimizing the D-criterion value (*exploration*).
+To implement this robust objective, we revise the approach from the previous section by assigning costs based on the *minimum* predicted yield in a small neighborhood of each design point. As a neighborhood, we consider a deviation in temperature of 10°C, a deviation in reaction time of 7 minutes and zero deviation in the sultine ratio. Projected to the design grid, this corresponds to a $3 \times 3$ square of neighboring design points along the temperature and reaction time axes. Reusing the full quadratic linear model from the first example, we start from an initial I-optimal design of size $m_0 = 10$ and augment the design 5 times, each time by a single design point. We also increase the cost scaling parameter `alpha` putting more weight on optimization of the robustness objective (*exploitation*) and less on minimizing the I-criterion value (*exploration*).
 
 ```{r, echo = TRUE}
 ## predict min. yield in small neighborhood
@@ -525,9 +525,9 @@ predict_min <- function(fit, newdata, eps = c(7, 0, 10)) {
 design <- lm_design$new(
   formula = ~(temperature + reaction_time + sultine_conc)^2 + I(temperature^2) + I(reaction_time^2) + I(sultine_conc^2),
   data = apply(fullerenes[, -4], 2, scale),  ## standardized data columns
-  alpha = 0.1                                ## cost scaling parameter
+  alpha = 1                                  ## cost scaling parameter
 )
-design$optimize(criterion = "D", return_value = FALSE)
+design$optimize(criterion = "I", return_value = FALSE)
 init_design <- design$round(m = 10, method = "optimal", seed = 1)
 
 n_iter <- 5
@@ -539,7 +539,7 @@ for(i in 1:n_iter) {
   fit <- lm(update(design$formula, product_amount ~ .), data = fullerenes[design_points, ])
   design$update(cost = 1 - predict_min(fit, newdata = fullerenes))
   ## augment design
-  design$augment(design_weights = design_weights, criterion = "D", return_value = FALSE)
+  design$augment(design_weights = design_weights, criterion = "I", return_value = FALSE)
   ## add point w/ highest weight
   design_points <- c(design_points, setdiff(order(design$design_weights, decreasing = TRUE), design_points)[1])
   design_weights[design_points] <- 1 / length(design_points)
@@ -779,7 +779,7 @@ ggplot(weights2, aes(x = temp_fct, y = conc_fct, fill = yield)) +
   scale_alpha_manual(values = c("0" = 0.25, "1" = 1, "2" = 1)) +
   scale_color_manual(values = c("0" = NA, "1" = "black", "2" = "black")) + 
   theme_minimal(base_size=11) +
-  labs(x = "Temperature [C]", y = "Concentration [M]", title = "", caption = "First- and second-stage designs (m\u2081=25, m\u2082=35)") +
+  labs(x = "Temperature [C]", y = "Concentration [M]", title = "", caption = "First- and second-stage designs (m\u2081=25, m\u2082=51)") +
   guides(fill = guide_legend(title = "Yield", ncol = 1), alpha = "none", color = "none") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), panel.spacing = unit(0, "lines"),
         strip.text.x.top = element_text(size = 7),

@@ -84,15 +84,37 @@ static void R_scs_solve_cleanup(void *data, Rboolean jump)
 
         /* free memory */
         if (pars->d)
-            SCS(free_data)(pars->d);
+        {
+            scs_free((pars->d)->b);
+            scs_free((pars->d)->c);
+            if ((pars->d)->A)
+            {
+                scs_free(((pars->d)->A)->x);
+                scs_free(((pars->d)->A)->i);
+                scs_free(((pars->d)->A)->p);
+                scs_free((pars->d)->A);
+            }
+            scs_free(pars->d);
+        }
         if (pars->k)
-            SCS(free_cone)(pars->k);
+        {
+            if ((pars->k)->q)
+                scs_free((pars->k)->q);
+            if ((pars->k)->d)
+                scs_free((pars->k)->d);
+            scs_free(pars->k);
+        }
         if (pars->info)
             scs_free(pars->info);
         if (pars->stgs)
             scs_free(pars->stgs);
         if (pars->sol)
-            SCS(free_sol)(pars->sol);
+        {
+            scs_free((pars->sol)->x);
+            scs_free((pars->sol)->y);
+            scs_free((pars->sol)->s);
+            scs_free(pars->sol);
+        }
         if (pars->w)
             scs_finish(pars->w);
     }
