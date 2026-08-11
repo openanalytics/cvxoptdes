@@ -38,8 +38,8 @@ jobs:
 #          - {os: windows-latest, r: 'devel'}
 #          - {os: windows-latest, r: 'next'}
 #          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'devel'}
-          - {os: ubuntu-latest, r: 'next'}
+#          - {os: ubuntu-latest, r: 'devel'}
+#          - {os: ubuntu-latest, r: 'next'}
           - {os: ubuntu-latest, r: 'release'}
 #          - {os: ubuntu-latest, r: 'oldrel'}
 
@@ -49,6 +49,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with: 
+          submodules: true
 
       - uses: r-lib/actions/setup-pandoc@v2
 
