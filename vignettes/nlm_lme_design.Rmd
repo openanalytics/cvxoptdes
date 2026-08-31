@@ -2,7 +2,7 @@
 title: "Nonlinear/Linear mixed model optimal design"
 output:
   rmarkdown::html_vignette
-date: "2026-08-11"
+date: "2026-08-31"
 vignette: >
   %\VignetteIndexEntry{Nonlinear/Linear mixed model optimal design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -420,7 +420,7 @@ mirai::daemons(0)
 
 
 ``` r
-data[exact_design > 0, ]
+design$subset(replicates = exact_design)
 #>      A  B  C  D week
 #> 9    1  1 -1 -1    1
 #> 57   1 -1 -1  1    1
@@ -495,7 +495,7 @@ mirai::daemons(0)
 
 
 ``` r
-data_8weeks[exact_8weeks > 0, ]
+design_8weeks$subset(replicates = exact_8weeks)
 #>      A  B  C  D week
 #> 21   1 -1  1 -1    1
 #> 60   1  0 -1  1    1
@@ -554,7 +554,7 @@ mirai::daemons(0)
 
 
 ``` r
-data[penalized_design > 0, ]
+design$subset(replicates = penalized_design)
 #>      A  B  C  D week
 #> 1   -1 -1 -1 -1    1
 #> 16  -1  1  0 -1    1

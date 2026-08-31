@@ -135,6 +135,7 @@ design <- lm_design$new(
 design$optimize(criterion = "D")
 ## integer D-optimal design w/ 13 design points
 (exact_design <- design$round(m = 13, method = "optimal", seed = 1))
+design$subset(replicates = exact_design)
 ## integer design covariance and correlation matrices
 design$vcov(design_weights = exact_design, sigma2 = 1)
 design$corr(design_weights = exact_design)
@@ -232,7 +233,7 @@ design$augment(design_weights = init_design, gamma = 0.4, criterion = "D")
 ## exact augmented design
 (augment_design <- design$round(m = 8, method = "optimal", seed = 1, augment_design = init_design))
 ## proposed design points
-data[augment_design - init_design > 0, ]
+design$subset(replicates = augment_design - init_design)
 
 ## augmented design w/ orthogonality constraints
 design_ortho <- design$clone()
@@ -325,6 +326,7 @@ For design columns with no mean constraint, the value is \code{NA}.}
     \item \href{#method-lm_design-vcov}{\code{lm_design$vcov()}}
     \item \href{#method-lm_design-sep}{\code{lm_design$sep()}}
     \item \href{#method-lm_design-corr}{\code{lm_design$corr()}}
+    \item \href{#method-lm_design-subset}{\code{lm_design$subset()}}
     \item \href{#method-lm_design-clone}{\code{lm_design$clone()}}
   }
 }
@@ -786,6 +788,26 @@ The vector must be the same length as the number of design points in \code{data}
     \describe{
       \item{\code{design_weights}}{(optional) vector of design weights for which to evaluate the information matrix.}
       \item{\code{center}}{logical, whether to center the design columns when evaluating the correlation matrix, defaults to \code{TRUE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-lm_design-subset"></a>}}
+\if{latex}{\out{\hypertarget{method-lm_design-subset}{}}}
+\subsection{\code{lm_design$subset()}}{
+  Subsets the design points associated to an exact design vector with integer replicates as returned by \code{$round()}.
+The vector must be the same length as the number of design points in \code{data}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{lm_design$subset(replicates)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{replicates}}{integer vector of design point replicates of the same length as the candidate grid in \code{data}}
     }
     \if{html}{\out{</div>}}
   }

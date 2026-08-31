@@ -231,10 +231,10 @@ init_design <- c(0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 
 new_design <-  c(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 
 ## initial design
-data[init_design > 0, ]
+design$subset(replicates = init_design)
 
 ## new design points
-data[new_design - init_design > 0, ]
+design$subset(replicates = new_design - init_design)
 
 ## criterion value
 design$crit(new_design, criterion = "D")
@@ -258,7 +258,7 @@ For the calculation of an exact D-optimal augmented design, the `$round()` metho
 (augment_design <- design$round(m = 8, method = "optimal", seed = 1, augment_design = init_design))
 
 ## proposed design points
-data[augment_design - init_design > 0, ]
+design$subset(replicates = augment_design - init_design)
 ```
 
 A consequence of the D-optimal augmentation is that the main effects columns in the augmented design matrix are no longer uncorrelated. Instead, we can augment the design by imposing the orthogonality constraints that the main effects remain uncorrelated in the augmented design (at the cost of a lower D-criterion value). The exact design is obtained using the `"orthogonal"` rounding method, since `"optimal"` rounding does not take into account the orthogonality constraints in the `$orthogonal` field:
@@ -279,7 +279,7 @@ design_ortho$augment(design_weights = init_design, gamma = 0.4, criterion = "D",
 (ortho_augment_design <- design_ortho$round(m = 8, method = "orthogonal", augment_design = init_design, highs_control = list(log_to_console = FALSE)))
 
 ## proposed design points
-data[ortho_augment_design - init_design > 0, ]
+design_ortho$subset(replicates = ortho_augment_design - init_design)
 ```
 
 ```{r augment_design-2, out.width = "35%", fig.dim = c(6,6)}

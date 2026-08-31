@@ -191,6 +191,7 @@
 #' design$optimize(criterion = "D")
 #' ## integer D-optimal design w/ 13 design points
 #' (exact_design <- design$round(m = 13, method = "optimal", seed = 1))
+#' design$subset(replicates = exact_design)
 #' ## integer design covariance and correlation matrices
 #' design$vcov(design_weights = exact_design, sigma2 = 1)
 #' design$corr(design_weights = exact_design)
@@ -288,7 +289,7 @@
 #' ## exact augmented design
 #' (augment_design <- design$round(m = 8, method = "optimal", seed = 1, augment_design = init_design))
 #' ## proposed design points
-#' data[augment_design - init_design > 0, ]
+#' design$subset(replicates = augment_design - init_design)
 #'
 #' ## augmented design w/ orthogonality constraints
 #' design_ortho <- design$clone()
@@ -349,7 +350,7 @@ lm_design <- R6Class(
         }
         private$contrasts <- contrasts
       }
-      private$.X <- do.call(model.matrix, args = c(list(object = self$formula, data = self$data), private$dots))
+      private$.X <- do.call(stats::model.matrix.default, args = c(list(object = self$formula, data = self$data), private$dots))
       if(!is.null(weights)) {
         self$weights <- weights_impl(weights, self$data, name = "weights")
       }
@@ -429,7 +430,7 @@ lm_design <- R6Class(
         private$.Xzero <- NULL
         private$.colmeans <- NULL
         mf <- do.call(model.frame, args = c(list(formula = self$formula, data = self$data), private$dots))
-        private$.X <- model.matrix(attr(mf, "terms"), mf)
+        private$.X <- stats::model.matrix.default(attr(mf, "terms"), mf)
         ## cascade updates
         if(!is.element("cost", names(dots)) && inherits(attr(self$cost, "formula"), "formula")) {
           dots$cost <- attr(self$cost, "formula")
@@ -1300,7 +1301,7 @@ lm_design <- R6Class(
           }
         }
         mf <- do.call(model.frame, args = c(list(formula = self$formula, data = newdata), private$dots))
-        xpred <- model.matrix(attr(mf, "terms"), mf)
+        xpred <- stats::model.matrix.default(attr(mf, "terms"), mf)
       } else {
         xpred <- private$.X
       }
@@ -1355,6 +1356,22 @@ lm_design <- R6Class(
       R <- M / outer(D, D)
       rownames(R) <- colnames(R) <- colnames(X)
       return(R)
+    },
+
+    #' @description
+    #' Subsets the design points associated to an exact design vector with integer replicates as returned by \code{$round()}.
+    #' The vector must be the same length as the number of design points in \code{data}.
+    #' @param replicates integer vector of design point replicates of the same length as the candidate grid in \code{data}
+    subset = function(replicates) {
+        n <- nrow(self$data)
+        stopifnot(
+          is.numeric(replicates),
+          length(replicates) == n,
+          "'replicates' must be an integer design vector" = all(as.integer(replicates) == replicates),
+          all(replicates >= 0),
+          !any(is.na(replicates))
+        )
+        return(self$data[rep(1:n, times = as.integer(replicates)), ])
     }
 
   ),
@@ -1477,7 +1494,7 @@ parse_ortho_constraints <- function(orthogonal, data, formula, dots) {
       stop("'orthogonal' matrix must contain only nonnegative values")
     }
     diag(orthogonal) <- Inf
-    colnms <- colnames(do.call(model.matrix, args = c(list(object = formula, data = data), dots)))
+    colnms <- colnames(do.call(stats::model.matrix.default, args = c(list(object = formula, data = data), dots)))
     dimnames(orthogonal) <- list(colnms, colnms)
     return(orthogonal)
   }
@@ -1488,7 +1505,7 @@ parse_ortho_constraints <- function(orthogonal, data, formula, dots) {
     stopifnot(
       length(orthogonal) > 0, all(sapply(orthogonal, inherits, "formula")), all(lengths(orthogonal) == 3L)
     )
-    colnms <- colnames(do.call(model.matrix, args = c(list(object = formula, data = data), dots)))
+    colnms <- colnames(do.call(stats::model.matrix.default, args = c(list(object = formula, data = data), dots)))
     ortho <- matrix(Inf, nrow = length(colnms), ncol = length(colnms), dimnames = list(colnms, colnms))
     for(frm in orthogonal) {
       sub_frm <- frm[[2]]
@@ -1508,10 +1525,10 @@ parse_ortho_constraints <- function(orthogonal, data, formula, dots) {
         upr <- 0
       }
       lhs_frm <- update(formula, call("~", call("+", lhs_vars, 0)))
-      lhs <- colnames(do.call(model.matrix, args = c(list(object = lhs_frm, data = data), dots)))
+      lhs <- colnames(do.call(stats::model.matrix.default, args = c(list(object = lhs_frm, data = data), dots)))
       lhs <- intersect(lhs, colnms)
       rhs_frm <- update(formula, call("~", rhs_vars))
-      rhs <- colnames(do.call(model.matrix, args = c(list(object = rhs_frm, data = data), dots)))
+      rhs <- colnames(do.call(stats::model.matrix.default, args = c(list(object = rhs_frm, data = data), dots)))
       rhs <- intersect(rhs, colnms)
       ortho[lhs, rhs] <- upr
       ortho[rhs, lhs] <- upr
@@ -1529,7 +1546,7 @@ parse_zero_constraints <- function(zeros, X, data, formula, dots) {
     stopifnot(
       length(zeros) > 0, all(sapply(zeros, inherits, "formula")), all(lengths(zeros) == 2L) || all(lengths(zeros) == 3L)
     )
-    colnms <- colnames(do.call(model.matrix, args = c(list(object = formula, data = data), dots)))
+    colnms <- colnames(do.call(stats::model.matrix.default, args = c(list(object = formula, data = data), dots)))
 
     if(all(lengths(zeros) == 3L)) {
       zerovec <- rep(NA_real_, times = length(colnms))
@@ -1541,7 +1558,7 @@ parse_zero_constraints <- function(zeros, X, data, formula, dots) {
     for(frm in zeros) {
       lhs_vars <- frm[[2]]
       lhs_frm <- update(formula, call("~", call("+", lhs_vars, 0)))
-      lhs <- colnames(do.call(model.matrix, args = c(list(object = lhs_frm, data = data), dots)))
+      lhs <- colnames(do.call(stats::model.matrix.default, args = c(list(object = lhs_frm, data = data), dots)))
       lhs <- intersect(lhs, colnms)
       if(length(frm) == 3L) {
         ## two-part formula
@@ -1566,12 +1583,12 @@ parse_zero_constraints <- function(zeros, X, data, formula, dots) {
 }
 
 parse_mean_constraints <- function(frm, X, data, formula, dots) {
-  colnms <- colnames(do.call(model.matrix, args = c(list(object = formula, data = data), dots)))
+  colnms <- colnames(do.call(stats::model.matrix.default, args = c(list(object = formula, data = data), dots)))
   meanvec <- rep(NA_real_, times = length(colnms))
   names(meanvec) <- colnms
   lhs_vars <- frm[[2]]
   lhs_frm <- update(formula, call("~", call("+", lhs_vars, 0)))
-  lhs <- colnames(do.call(model.matrix, args = c(list(object = lhs_frm, data = data), dots)))
+  lhs <- colnames(do.call(stats::model.matrix.default, args = c(list(object = lhs_frm, data = data), dots)))
   lhs <- intersect(lhs, colnms)
   if(is.language(frm[[3]])) {
     meanvec[lhs] <- as.numeric(eval(frm[[3]], envir = parent.frame()))

@@ -2,7 +2,7 @@
 title: "Optimal design augmentation"
 output:
   rmarkdown::html_vignette
-date: "2026-08-11"
+date: "2026-08-31"
 vignette: >
   %\VignetteIndexEntry{Optimal design augmentation}
   %\VignetteEngine{knitr::rmarkdown}
@@ -187,7 +187,7 @@ init_design <- c(0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 
 new_design <-  c(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 
 ## initial design
-data[init_design > 0, ]
+design$subset(replicates = init_design)
 #>    x1 x2 x3 x4 x5 x6
 #> 8   1  1  1 -1 -1 -1
 #> 9  -1 -1 -1  1 -1 -1
@@ -203,7 +203,7 @@ data[init_design > 0, ]
 #> 64  1  1  1  1  1  1
 
 ## new design points
-data[new_design - init_design > 0, ]
+design$subset(replicates = new_design - init_design)
 #>    x1 x2 x3 x4 x5 x6
 #> 2   1 -1 -1 -1 -1 -1
 #> 5  -1 -1  1 -1 -1 -1
@@ -256,7 +256,7 @@ For the calculation of an exact D-optimal augmented design, the `$round()` metho
 #> [1] 0.9735257
 
 ## proposed design points
-data[augment_design - init_design > 0, ]
+design$subset(replicates = augment_design - init_design)
 #>    x1 x2 x3 x4 x5 x6
 #> 5  -1 -1  1 -1 -1 -1
 #> 6   1 -1  1 -1 -1 -1
@@ -297,7 +297,7 @@ design_ortho$augment(design_weights = init_design, gamma = 0.4, criterion = "D",
 #> [1] 0.9072304
 
 ## proposed design points
-data[ortho_augment_design - init_design > 0, ]
+design_ortho$subset(replicates = ortho_augment_design - init_design)
 #>    x1 x2 x3 x4 x5 x6
 #> 5  -1 -1  1 -1 -1 -1
 #> 12  1  1 -1  1 -1 -1

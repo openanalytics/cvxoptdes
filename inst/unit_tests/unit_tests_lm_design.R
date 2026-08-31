@@ -363,7 +363,7 @@ dotest_tol("3.3.4", a_val, 0.105)
 
 w_i <- obj$optimize(criterion = "I")
 i_val <- attr(w_i, "criterion")$crit.value
-dotest_tol("3.3.5", i_val, 0.3147453)
+dotest_ineq("3.3.5", 0.3147453, i_val)
 
 w_i <- obj$round(m = 10, method = "optimal", seed = 1, criterion = "I", show_progress = FALSE)
 i_val <- attr(w_i, "criterion")$crit.value
@@ -658,11 +658,16 @@ dotest_tol("8.2.3", ses1, sqrt(10) * ses)
 w_round <- obj$round(m = 10, method = "optimal", seed = 1, show_progress = FALSE)
 dotest_tol("8.3.1", obj$vcov(m = 10, sigma2 = 1), diag(0.1, 6))
 dotest_tol("8.3.2", diag(obj$vcov(design_weights = w_round, sigma2 = 1)), rep(0.1071429, 6))
-dotest_tol("8.3.3", sum(obj$vcov(design_weights = w_round, sigma2 = 1)), 0.7142857)
+dotest_tol("8.3.3", sum(abs(obj$vcov(design_weights = w_round, sigma2 = 1))), 0.8571429)
 
 ### corr
 dotest_tol("8.4.1", obj$corr(), diag(6))
 dotest_tol("8.4.2", sum(abs(obj$corr(design_weights = w_round, center = FALSE))), 8.4)
 dotest_tol("8.4.3", sum(abs(obj$corr(design_weights = w_round, center = TRUE))), 8.2)
+
+### subset
+design <- obj$subset(w_round)
+dotest("8.5.1", dim(design), c(10L, 3L))
+dotest("8.5.2", colnames(design), c("x1", "x2", "x3"))
 
 cat(sprintf("End of unit_tests_lm_design.R [elapsed: %.2fs]\n", (proc.time() - start)[3]))

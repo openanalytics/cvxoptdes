@@ -86,7 +86,8 @@ design <- nlm_design$new(
 ## approximate I-optimal design
 design$optimize(criterion = "I")
 ## integer design w/ 11 design points
-design$round(m = 11, method = "optimal", seed = 1)
+(exact_design <- design$round(m = 11, method = "optimal", seed = 1))
+design$subset(replicates = exact_design)
 
 ## Penalized optimal design
 
@@ -174,6 +175,11 @@ for the \code{alias} optimality criterion.}
     \item \href{#method-nlm_design-clone}{\code{nlm_design$clone()}}
   }
 }
+\if{html}{\out{<details open><summary>Inherited methods</summary>
+<ul>
+  <li><span class="pkg-link" data-pkg="cvxoptdes" data-topic="lm_design" data-id="subset"><a href='../../cvxoptdes/html/lm_design.html#method-lm_design-subset'><code>lm_design$subset()</code></a></span></li>
+</ul>
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-nlm_design-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-nlm_design-initialize}{}}}

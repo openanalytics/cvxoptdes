@@ -261,12 +261,17 @@ dotest_tol("7.2.6", ses1, sqrt(10) * ses)
 w_round <- obj_glm$round(m = 10, method = "optimal", seed = 1, show_progress = FALSE)
 dotest_tol("7.3.1", obj_glm$vcov(m = 10, sigma2 = 1), diag(0.1, 6))
 dotest_tol("7.3.2", diag(obj_gam$vcov(design_weights = w_round, sigma2 = 1)), rep(0.1071429, 6))
-dotest_tol("7.3.3", sum(obj_gam$vcov(design_weights = w_round, sigma2 = 1)), 0.7142857)
+dotest_tol("7.3.3", sum(abs(obj_gam$vcov(design_weights = w_round, sigma2 = 1))), 0.8571429)
 
 ### corr
 dotest_tol("7.4.1", obj_glm$corr(), diag(6))
 dotest_tol("7.4.2", sum(abs(obj_glm$corr(design_weights = w_round, center = FALSE))), 8.4)
 dotest_tol("7.4.3", sum(abs(obj_gam$corr(design_weights = w_round, center = TRUE))), 8.2)
+
+### subset
+design <- obj_glm$subset(w_round)
+dotest("7.5.1", dim(design), c(10L, 3L))
+dotest("7.5.2", colnames(design), c("x1", "x2", "x3"))
 
 cat(sprintf("End of unit_tests_gam_glm_design.R [elapsed: %.2fs]\n", (proc.time() - start)[3]))
 

@@ -131,7 +131,8 @@
 #' ## approximate D-optimal design
 #' design$optimize(criterion = "D", max_iter = 10)
 #' ## integer design w/ 18 design points
-#' design$round(m = 6, method = "optimal", seed = 1)
+#' (exact_design <- design$round(m = 6, method = "optimal", seed = 1))
+#' design$subset(replicates = exact_design)
 #'
 #' ## Split-plot design
 #'
@@ -210,7 +211,10 @@ lme_design <- R6Class(
     #' @param contrasts optional contrasts used when evaluating the fixed effects formula \code{fix.eff}.
     #' @param ... any additional arguments passed to \link{model.matrix} when evaluating the fixed effects formula \code{fix.eff}.
     initialize = function(formula, data, eta, weights = NULL, cost = NULL, contrasts = NULL, alpha = 1, lambda = 0, upper = 1, ...) {
-
+      stopifnot(
+        inherits(formula, "formula"),
+        "'formula' must be a two-part formula of the form ~ fix.eff ~ ran.eff" = identical(length(formula), 3L)
+      )
       self$formula <- formula
       self$alpha <- 1
       self$lambda <- 0
@@ -265,6 +269,10 @@ lme_design <- R6Class(
       dots <- list(...)
 
       if(is.element("formula", names(dots)) && !is.null(dots$formula)) {
+        stopifnot(
+          inherits(dots$formula, "formula"),
+          "'formula' must be a two-part formula of the form ~ fix.eff ~ ran.eff" = !identical(length(dots$formula), 3L)
+        )
         self$formula <- dots$formula
         ## cascade update data
         if(!is.element("data", names(dots))) {
@@ -1386,7 +1394,7 @@ lme_design <- R6Class(
           }
         }
         frm <- as.formula(self$formula[[2]])
-        xpred <- do.call(model.matrix, args = c(list(object = frm, data = newdata), private$dots))
+        xpred <- do.call(stats::model.matrix.default, args = c(list(object = frm, data = newdata), private$dots))
       } else {
         xpred <- private$.X
       }
@@ -1475,7 +1483,7 @@ lme_design <- R6Class(
 parse_design_matrices <- function(formula, data, kwargs) {
   ## fixed effects
   frm <- as.formula(formula[[2]])
-  X <- do.call(model.matrix, args = c(list(object = frm, data = data), kwargs))
+  X <- do.call(stats::model.matrix.default, args = c(list(object = frm, data = data), kwargs))
   ## random effects
   re_values <- tryCatch(eval(formula[[3]], envir = as.list(data)))
   if(inherits(re_values, "error")) {

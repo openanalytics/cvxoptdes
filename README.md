@@ -111,7 +111,7 @@ exact_design
 #> attr(,"criterion")$crit.rel.eff
 #> [1] 0.9713409
 
-design$data[exact_design > 0, ]
+design$subset(replicates = exact_design)
 #>    x1 x2 x3
 #> 1  -2 -2 -1
 #> 5   2 -2 -1

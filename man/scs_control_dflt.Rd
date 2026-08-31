@@ -6,16 +6,17 @@
 \usage{
 scs_control_dflt(
   maxiter = 1e+05,
-  eps_rel = 1e-06,
-  eps_abs = 1e-06,
+  eps_rel = 1e-05,
+  eps_abs = 1e-05,
   eps_infeas = 1e-07,
   alpha_relax = 1.5,
   rho_x = 1e-06,
   scale = 0.1,
   normalize = TRUE,
   acceleration_lookback = 10,
-  acceleration_interval = 10,
+  acceleration_interval = 5,
   adaptive_scale = TRUE,
+  adaptive_diag_scale = TRUE,
   time_limit_secs = 60
 )
 }
@@ -43,6 +44,8 @@ More memory requires more time to compute but can give more reliable steps. If \
 
 \item{adaptive_scale}{logical, whether to heuristically adapt dual scale through the solve.}
 
+\item{adaptive_diag_scale}{logical, whether to refine the metric R per row, using the primal residual profile. Requires \code{adaptive_scale} (silently disabled without it).}
+
 \item{time_limit_secs}{positive numeric, time limit for solve run in seconds (can be fractional). The value 0 is interpreted as no limit. The default is 60.}
 }
 \value{
@@ -59,6 +62,7 @@ A \code{list} with components:
 \item acceleration_lookback
 \item acceleration_interval
 \item adaptive_scale
+\item adaptive_diag_scale
 \item time_limit_secs
 }
 with meanings as explained under 'Arguments'.

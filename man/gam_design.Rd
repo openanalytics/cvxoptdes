@@ -84,7 +84,8 @@ design <- gam_design$new(
 ## approximate I-optimal design
 design$optimize(criterion = "I")
 ## integer optimal design w/ 11 design points
-exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1)
+(exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1))
+design$subset(replicates = exact_design)
 
 if(FALSE) {
   ## GAM fitted to integer design
@@ -182,6 +183,11 @@ with given weight proportions.}
     \item \href{#method-gam_design-clone}{\code{gam_design$clone()}}
   }
 }
+\if{html}{\out{<details open><summary>Inherited methods</summary>
+<ul>
+  <li><span class="pkg-link" data-pkg="cvxoptdes" data-topic="lm_design" data-id="subset"><a href='../../cvxoptdes/html/lm_design.html#method-lm_design-subset'><code>lm_design$subset()</code></a></span></li>
+</ul>
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-gam_design-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-gam_design-initialize}{}}}

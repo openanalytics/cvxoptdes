@@ -217,15 +217,15 @@ round_puk <- function(w, m, tol = (.Machine$double.eps)^(1/4), augment = NULL, u
 # 	return(w)
 # }
 
-lower_tri_idx <- function(i, j, k) {
-  if(i > j) {
-    k * (j - 1) + i - (j * (j + 1)) / 2
-  } else if (j > i) {
-    k * (i - 1) + j - (i * (i + 1)) / 2
-  } else {
-    NA_integer_
-  }
-}
+# lower_tri_idx <- function(i, j, k) {
+#   if(i > j) {
+#     k * (j - 1) + i - (j * (j + 1)) / 2
+#   } else if (j > i) {
+#     k * (i - 1) + j - (i * (i + 1)) / 2
+#   } else {
+#     NA_integer_
+#   }
+# }
 
 round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), zeros = NULL, Xzero = NULL, colmeans = NULL,
                         augment = NULL, control = list(), seed = NULL, crit = NA, n_supp = NULL, write_mps = NULL) {

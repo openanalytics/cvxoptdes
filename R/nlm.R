@@ -110,7 +110,8 @@
 #' ## approximate I-optimal design
 #' design$optimize(criterion = "I")
 #' ## integer design w/ 11 design points
-#' design$round(m = 11, method = "optimal", seed = 1)
+#' (exact_design <- design$round(m = 11, method = "optimal", seed = 1))
+#' design$subset(replicates = exact_design)
 #'
 #' ## Penalized optimal design
 #'

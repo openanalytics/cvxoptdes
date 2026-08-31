@@ -112,7 +112,8 @@
 #' ## approximate I-optimal design
 #' design$optimize(criterion = "I")
 #' ## integer optimal design w/ 11 design points
-#' exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1)
+#' (exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1))
+#' design$subset(replicates = exact_design)
 #'
 #' if(FALSE) {
 #'   ## GAM fitted to integer design

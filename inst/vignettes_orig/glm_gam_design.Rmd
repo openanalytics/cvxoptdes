@@ -127,7 +127,7 @@ To round the approximate D-optimal design to an exact (integer) design with a gi
 ## integer design w/ 8 design points
 (exact_design <- design$round(m = 8, method = "optimal", seed = 1, n_repeats = 25))
 
-data[exact_design > 0,]
+design$subset(replicates = exact_design)
 ```
 
 All other methods available for objects of class `lm_design` can also be used for `glm_design` objects (e.g. `$stratify()`, `$augment()`, `$vcov()`, etc.). For comparison, we can evaluate the D-criterion of the original fractional factorial design:
@@ -142,7 +142,7 @@ init_design <- c(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  0, 0, 1)
 
-data[init_design > 0, ]
+design$subset(replicates = init_design)
 
 ## D-criterion
 design$crit(init_design, criterion = "D")
@@ -185,7 +185,7 @@ design$optimize(criterion = "D") |> round(2)
 ## integer design w/ 18 design points
 (exact_design <- design$round(m = 18, method = "optimal", seed = 1))
 
-data[rep(1:nrow(data), times = exact_design), ]
+design$subset(replicates = exact_design)
 ```
 
 The locally D-optimal design is 15% more efficient than the central composite design in terms of the ratio of D-criteria. Again, this is not surprising as the D-optimal design was generated conditional on the nominal parameter values $\boldsymbol{\theta}_0$. Note that a D-optimal design based on the systematic component viewed as a linear model is only 4.3% more efficient than the central composite design.
@@ -193,7 +193,7 @@ The locally D-optimal design is 15% more efficient than the central composite de
 ```{r, echo = TRUE}
 ## central composite design w/ 18 design points
 init_design <- c(1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1)
-data[rep(1:nrow(data), times = init_design), ]
+design$subset(replicates = init_design)
 
 ## D-criterion
 design$crit(init_design, criterion = "D")

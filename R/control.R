@@ -18,6 +18,7 @@ utils::globalVariables(
 #' More memory requires more time to compute but can give more reliable steps. If \code{acceleration_lookback < 1}, Anderson acceleration is disabled.
 #' @param acceleration_interval positive integer, run Anderson acceleration every \code{acceleration_interval} iteration(s).
 #' @param adaptive_scale logical, whether to heuristically adapt dual scale through the solve.
+#' @param adaptive_diag_scale logical, whether to refine the metric R per row, using the primal residual profile. Requires \code{adaptive_scale} (silently disabled without it).
 #' @param time_limit_secs positive numeric, time limit for solve run in seconds (can be fractional). The value 0 is interpreted as no limit. The default is 60.
 #' @seealso \url{https://www.cvxgrp.org/scs/api/settings}
 #' @examples
@@ -36,14 +37,15 @@ utils::globalVariables(
 #' \item acceleration_lookback
 #' \item acceleration_interval
 #' \item adaptive_scale
+#' \item adaptive_diag_scale
 #' \item time_limit_secs
 #' }
 #' with meanings as explained under 'Arguments'.
 #' @export
-scs_control_dflt <- function(maxiter = 100000, eps_rel = 1e-6, eps_abs = 1e-6, eps_infeas = 1e-7,
+scs_control_dflt <- function(maxiter = 100000, eps_rel = 1e-5, eps_abs = 1e-5, eps_infeas = 1e-7,
                              alpha_relax = 1.5, rho_x = 1e-6, scale = 0.1, normalize = TRUE,
-                             acceleration_lookback = 10, acceleration_interval = 10,
-                             adaptive_scale = TRUE, time_limit_secs = 60) {
+                             acceleration_lookback = 10, acceleration_interval = 5,
+                             adaptive_scale = TRUE, adaptive_diag_scale = TRUE, time_limit_secs = 60) {
 
   stopifnot(
     is.numeric(maxiter), length(maxiter) == 1, maxiter >= 1,
@@ -56,7 +58,7 @@ scs_control_dflt <- function(maxiter = 100000, eps_rel = 1e-6, eps_abs = 1e-6, e
     is.logical(normalize),
     is.numeric(acceleration_lookback), length(acceleration_lookback) == 1,
     is.numeric(acceleration_interval), length(acceleration_interval) == 1, acceleration_interval >= 1,
-    is.logical(adaptive_scale),
+    is.logical(adaptive_scale), is.logical(adaptive_diag_scale),
     is.numeric(time_limit_secs), length(time_limit_secs) == 1, time_limit_secs >= 0
   )
 
@@ -64,7 +66,8 @@ scs_control_dflt <- function(maxiter = 100000, eps_rel = 1e-6, eps_abs = 1e-6, e
        eps_infeas = eps_infeas, alpha_relax = alpha_relax, rho_x = rho_x, scale = scale,
        normalize = normalize, acceleration_lookback = max(as.integer(acceleration_lookback), 0),
        acceleration_interval = as.integer(acceleration_interval),
-       adaptive_scale = adaptive_scale, time_limit_secs = time_limit_secs)
+       adaptive_scale = adaptive_scale, adaptive_diag_scale = adaptive_scale && adaptive_diag_scale, 
+       time_limit_secs = time_limit_secs)
 }
 
 parse_ctrl <- function(control = NULL, alpha = 1, lambda = 0, gamma = 1, upper = 1, criterion = "D", verbose = FALSE) {
@@ -81,7 +84,7 @@ parse_ctrl <- function(control = NULL, alpha = 1, lambda = 0, gamma = 1, upper =
     is.logical(ctrl$normalize),
     is.numeric(ctrl$acceleration_lookback), length(ctrl$acceleration_lookback) == 1,
     is.numeric(ctrl$acceleration_interval), length(ctrl$acceleration_interval) == 1, ctrl$acceleration_interval >= 1,
-    is.logical(ctrl$adaptive_scale),
+    is.logical(ctrl$adaptive_scale), is.logical(ctrl$adaptive_diag_scale),
     is.numeric(ctrl$time_limit_secs), length(ctrl$time_limit_secs) == 1, ctrl$time_limit_secs >= 0,
     is.numeric(alpha), length(alpha) == 1,
     is.numeric(gamma), length(gamma) == 1, gamma >= 0, gamma <= 1,
@@ -96,7 +99,8 @@ parse_ctrl <- function(control = NULL, alpha = 1, lambda = 0, gamma = 1, upper =
     as.integer(ctrl$normalize),
     max(as.integer(ctrl$acceleration_lookback), 0L),
     as.integer(ctrl$acceleration_interval),
-    as.integer(ctrl$adaptive_scale)
+    as.integer(ctrl$adaptive_scale),
+    as.integer(ctrl$adaptive_scale && ctrl$adaptive_diag_scale)
   )
   ctrl_dbl <- c(
     unlist(ctrl[c("eps_rel", "eps_abs", "eps_infeas", "alpha_relax", "rho_x", "scale", "time_limit_secs")]),

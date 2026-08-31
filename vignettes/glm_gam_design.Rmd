@@ -2,7 +2,7 @@
 title: "Generalized linear/additive model optimal design"
 output:
   rmarkdown::html_vignette
-date: "2026-08-11"
+date: "2026-08-31"
 vignette: >
   %\VignetteIndexEntry{Generalized linear/additive model optimal design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -128,7 +128,7 @@ To round the approximate D-optimal design to an exact (integer) design with a gi
 #> attr(,"criterion")$crit.rel.eff
 #> [1] 0.9210111
 
-data[exact_design > 0,]
+design$subset(replicates = exact_design)
 #>     x1 x2 x3 x4 x5 x6 x7
 #> 15  -1  1  1  1 -1 -1 -1
 #> 22   1 -1  1 -1  1 -1 -1
@@ -153,7 +153,7 @@ init_design <- c(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  0, 0, 1)
 
-data[init_design > 0, ]
+design$subset(replicates = init_design)
 #>     x1 x2 x3 x4 x5 x6 x7
 #> 8    1  1  1 -1 -1 -1 -1
 #> 26   1 -1 -1  1  1 -1 -1
@@ -225,7 +225,7 @@ design$optimize(criterion = "D") |> round(2)
 #> attr(,"criterion")$crit.rel.eff
 #> [1] 0.9722669
 
-data[rep(1:nrow(data), times = exact_design), ]
+design$subset(replicates = exact_design)
 #>          x1     x2     x3
 #> 3     1.000 -1.000 -1.000
 #> 7    -1.000  1.000 -1.000
@@ -253,7 +253,7 @@ The locally D-optimal design is 15% more efficient than the central composite de
 ``` r
 ## central composite design w/ 18 design points
 init_design <- c(1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1)
-data[rep(1:nrow(data), times = init_design), ]
+design$subset(replicates = init_design)
 #>          x1     x2     x3
 #> 1    -1.000 -1.000 -1.000
 #> 3     1.000 -1.000 -1.000

@@ -22,11 +22,6 @@ static inline int lower_tri_diag(int j, int k)
     return j * (2 * k - j + 1) / 2;
 }
 
-static inline int array_idx(int i, int j, int k, int p)
-{
-    return i + p * j + k * p * p;
-}
-
 void D_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_int mtot, scs_int ntot, double alpha, double lambda,
                         double gamma, double upr, scs_int nlvls, R_len_t z_ortho, R_len_t q_ortho, R_len_t mzeros, R_len_t mmeans)
 {

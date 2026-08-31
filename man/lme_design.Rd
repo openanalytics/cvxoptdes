@@ -101,7 +101,8 @@ design <- lme_design$new(
 ## approximate D-optimal design
 design$optimize(criterion = "D", max_iter = 10)
 ## integer design w/ 18 design points
-design$round(m = 6, method = "optimal", seed = 1)
+(exact_design <- design$round(m = 6, method = "optimal", seed = 1))
+design$subset(replicates = exact_design)
 
 ## Split-plot design
 
@@ -216,6 +217,7 @@ for the \code{alias} optimality criterion.}
 \if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="cvxoptdes" data-topic="lm_design" data-id="sparsify"><a href='../../cvxoptdes/html/lm_design.html#method-lm_design-sparsify'><code>lm_design$sparsify()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="cvxoptdes" data-topic="lm_design" data-id="subset"><a href='../../cvxoptdes/html/lm_design.html#method-lm_design-subset'><code>lm_design$subset()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

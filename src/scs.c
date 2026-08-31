@@ -4,11 +4,6 @@
 
 // #define USE_SPECTRAL_CONES 1
 
-static inline int lower_tri_idx(int i, int j, int k)
-{
-    return i > j ? (k - 1) * j + (i - j - 1) - (j * (j - 1)) / 2 : -1;
-}
-
 static inline int mat_idx(int i, int j, int n)
 {
     return i + n * j;
@@ -70,6 +65,7 @@ static void update_scs_settings(SEXP ctrl_int, SEXP ctrl_dbl, ScsSettings *stgs)
     stgs->acceleration_lookback = INTEGER_ELT(ctrl_int, 4);
     stgs->acceleration_interval = INTEGER_ELT(ctrl_int, 5);
     stgs->adaptive_scale = INTEGER_ELT(ctrl_int, 6);
+    stgs->adaptive_diag_scale = INTEGER_ELT(ctrl_int, 7);
     stgs->write_data_filename = (char *)NULL; // disabled
     stgs->log_csv_filename = (char *)NULL;    // disabled
     stgs->time_limit_secs = REAL_ELT(ctrl_dbl, 6);

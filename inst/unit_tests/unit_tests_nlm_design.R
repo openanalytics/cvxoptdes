@@ -29,7 +29,7 @@ w_a0 <- structure(rep(1/nrow(data), nrow(data)), criterion = list(crit = "A", cr
 
 w_a <- obj$optimize(criterion = "A")
 a_val <- attr(w_a, "criterion")$crit.value
-dotest_tol("1.1.1", a_val, 1.180618)
+dotest_ineq("1.1.1", 1.180618, a_val)
 
 w_a <- obj$round(m = 8, method = "efficient", seed = 1, show_progress = FALSE)
 a_val <- attr(w_a, "criterion")$crit.value
@@ -186,7 +186,7 @@ dotest_ineq("6.1.1", entropy(w_a), entropy(rep(1/nrow(obj$X), nrow(obj$X))))
 
 ### crit
 w_a <- obj$optimize(criterion = "A")
-dotest_tol("7.1.1", obj$crit(criterion = "A"), 1.180618)
+dotest_ineq("7.1.1", obj$crit(criterion = "A"), 1.180618)
 dotest_tol("7.1.2", obj$crit(w_a, criterion = "D"), 8.008704)
 dotest_tol("7.1.3", obj$crit(w_a, criterion = "I"), 0.3152352)
 dotest_tol("7.1.4", obj$crit(w_a, criterion = "G"), 0.06952269)
@@ -210,6 +210,11 @@ dotest_tol("7.3.2", max(abs(cov_w[lower.tri(cov_w)])), 0.005583771)
 ### corr
 corr_w <- obj$corr(design_weights = w_a)
 dotest_tol("7.4.1", max(abs(corr_w[lower.tri(corr_w)])), 0.2793079)
+
+### subset
+design <- obj$subset(w_round)
+dotest("7.5.1", dim(design), c(8L, 3L))
+dotest("7.5.2", colnames(design), c("x1", "x2", "x3"))
 
 cat(sprintf("End of unit_tests_nlm_design.R [elapsed: %.2fs]\n", (proc.time() - start)[3]))
 

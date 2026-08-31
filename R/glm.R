@@ -127,7 +127,7 @@
 #' design$optimize(criterion = "D")
 #' ## integer design w/ 8 design points
 #' (exact_design <- design$round(m = 8, method = "optimal", n_repeats = 25, seed = 1))
-#' data[exact_design > 0,]
+#' design$subset(replicates = exact_design)
 #'
 #' ## Defect semiconductor wafers
 #' ## Example 5 from [Lewis et al. (2001)]
@@ -152,7 +152,7 @@
 #' design$optimize(criterion = "D")
 #' ## integer design w/ 18 design points
 #' (exact_design <- design$round(m = 18, method = "optimal", seed = 1))
-#' data[rep(1:nrow(data), times = exact_design), ]
+#' design$subset(replicates = exact_design)
 #'
 #' @export
 glm_design <- R6Class(
@@ -201,7 +201,7 @@ glm_design <- R6Class(
         }
         private$contrasts <- contrasts
       }
-      private$.Xinit <- do.call(model.matrix, args = c(list(object = self$formula, data = self$data), private$dots))
+      private$.Xinit <- do.call(stats::model.matrix.default, args = c(list(object = self$formula, data = self$data), private$dots))
       private$.X <- Xv_impl(private$.Xinit, theta = self$theta, family = self$family)
       if(!is.null(weights)) {
         self$weights <- weights_impl(weights, self$data, name = "weights")
@@ -267,7 +267,7 @@ glm_design <- R6Class(
           }
         }
         mf <- do.call(model.frame, args = c(list(formula = self$formula, data = self$data), private$dots))
-        private$.Xinit <- model.matrix(attr(mf, "terms"), mf)
+        private$.Xinit <- stats::model.matrix.default(attr(mf, "terms"), mf)
         private$.X <- Xv_impl(private$.X, theta = self$theta, family = self$family)
         ## cascade updates
         if(!is.element("cost", names(dots)) && inherits(attr(self$cost, "formula"), "formula")) {
@@ -538,7 +538,7 @@ glm_design <- R6Class(
           }
         }
         mf <- do.call(model.frame, args = c(list(formula = self$formula, data = newdata), private$dots))
-        xpred <- model.matrix(attr(mf, "terms"), mf)
+        xpred <- stats::model.matrix.default(attr(mf, "terms"), mf)
       } else {
         xpred <- private$.Xinit
       }

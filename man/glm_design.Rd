@@ -101,7 +101,7 @@ design <- glm_design$new(
 design$optimize(criterion = "D")
 ## integer design w/ 8 design points
 (exact_design <- design$round(m = 8, method = "optimal", n_repeats = 25, seed = 1))
-data[exact_design > 0,]
+design$subset(replicates = exact_design)
 
 ## Defect semiconductor wafers
 ## Example 5 from [Lewis et al. (2001)]
@@ -126,7 +126,7 @@ design <- glm_design$new(
 design$optimize(criterion = "D")
 ## integer design w/ 18 design points
 (exact_design <- design$round(m = 18, method = "optimal", seed = 1))
-data[rep(1:nrow(data), times = exact_design), ]
+design$subset(replicates = exact_design)
 
 }
 \references{
@@ -191,6 +191,11 @@ with given weight proportions.}
     \item \href{#method-glm_design-clone}{\code{glm_design$clone()}}
   }
 }
+\if{html}{\out{<details open><summary>Inherited methods</summary>
+<ul>
+  <li><span class="pkg-link" data-pkg="cvxoptdes" data-topic="lm_design" data-id="subset"><a href='../../cvxoptdes/html/lm_design.html#method-lm_design-subset'><code>lm_design$subset()</code></a></span></li>
+</ul>
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-glm_design-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-glm_design-initialize}{}}}

@@ -189,7 +189,7 @@ If cost penalties are present in the `$cost` field, these are passed down to the
 ```
 
 ```{r nlm_design-4, echo = FALSE, fig.dim = c(8, 6), out.width = "100%", fig.cap="Rounded penalized (integer) design with m=14 design points"}
-weights <- data[exact_design > 0, ]
+weights <- design$subset(exact_design)
 weights <- transform(weights, f = fx(x1, x2, theta))
 
 ggplot(data = xy, aes(x = x2, color = x1, group = x1)) +
@@ -254,7 +254,7 @@ If stratification constraints are present in the `$strata` field, these are pass
 ```
 
 ```{r nlm_design-6, echo = FALSE, fig.dim = c(8, 6), out.width = "100%", fig.cap="Rounded stratified (integer) design with m=12 design points"}
-weights <- design$data[exact_design > 0, ]
+weights <- design$subset(exact_design)
 weights <- transform(weights, f = fx(x1, x2, theta))
 
 ggplot(data = xy1, aes(x = x2, color = x1, group = x1)) +
@@ -398,7 +398,7 @@ exact_design[c(9, 57, 81, 97, 127, 136, 184, 196, 226, 254, 296, 320, 345, 366, 
 ```
 
 ```{r, echo = TRUE}
-data[exact_design > 0, ]
+design$subset(replicates = exact_design)
 ```
 
 where we evaluate the point-exchange algorithms in `$round_split_plot()` in parallel with `mirai` to reduce the total runtime. Compared to the initial split-plot design (DoE1) presented in [@OM25], the D-optimal split-plot design has an increased D-efficiency of 8.7\% measured by the ratio of D-criteria. Note that the initial split-plot design in [@OM25] was optimized using a composite D-optimality criterion, so it is also not expected to be D-optimal in the ordinary sense.
@@ -468,7 +468,7 @@ exact_8weeks[c(21, 60, 75, 82, 151, 214, 223, 235, 252, 294, 300, 331, 343, 379,
 ```
 
 ```{r, echo = TRUE}
-data_8weeks[exact_8weeks > 0, ]
+design_8weeks$subset(replicates = exact_8weeks)
 ```
 
 #### Penalized optimal design
@@ -503,7 +503,7 @@ penalized_design[c(1, 16, 73, 102, 138, 162, 184, 199, 223, 250, 295, 298, 349, 
 ```
 
 ```{r, echo = TRUE}
-data[penalized_design > 0, ]
+design$subset(replicates = penalized_design)
 
 ## compare whole plot levels
 tapply(exact_design, data$A, sum)        ## unbiased

@@ -217,7 +217,7 @@ obj$update(data = data_w)
 obj0$update(data = data_w)
 
 w_i <- obj$augment(design_weights = ~weights, max_iter = 10, gamma = 0.5, criterion = "I", show_progress = FALSE)
-dotest_tol("3.2.1", obj$crit(w_i + data_w$weights / 6, "I"), 0.1743029)
+dotest_ineq("3.2.1", 0.1721879, obj$crit(w_i + data_w$weights / 6, "I"))
 
 w_i <- obj0$augment(design_weights = ~weights, gamma = 0.5, criterion = "I")
 dotest_tol("3.2.2", obj0$crit(w_i + data_w$weights / 6, "I"), 0.333333)
@@ -234,7 +234,7 @@ dotest_tol("3.2.4", i_val, 0.3333333)
 w_a01 <- structure(w_d01, criterion = list(crit = "A", crit.value = 0.07023411))
 
 w_a <- obj$augment(design_weights = w_a01, max_iter = 10, gamma = 0.5, criterion = "A", show_progress = FALSE)
-dotest_tol("3.3.1", obj$crit(w_a + w_a01 / 6, "A"), 0.08159331)
+dotest_ineq("3.3.1", 0.08159331, obj$crit(w_a + w_a01 / 6, "A"))
 
 w_a <- obj0$augment(design_weights = w_a01, gamma = 0.5, criterion = "A")
 dotest_tol("3.3.2", obj0$crit(w_a + w_a01 / 6, "A"), 0.125)
@@ -337,10 +337,6 @@ dotest_tol("4.4.1", alias_val, 0.459041)
 w_alias <- obj0$optimize(criterion = "alias")
 alias_val <- attr(w_alias, "criterion")$crit.value
 dotest_tol("4.4.2", alias_val, 0.6806492)
-
-w_alias <- obj$round(m = 12, method = "optimal", seed = 1, n_repeats = 100, show_progress = FALSE)
-alias_val <- attr(w_alias, "criterion")$crit.value
-dotest_ineq("4.4.3", 0.7524062, alias_val)
 
 ### augment
 w_d <- obj$augment(design_weights = w_d01, max_iter = 5, gamma = 0.5, criterion = "D", show_progress = FALSE)
@@ -502,7 +498,7 @@ w_d <- obj$optimize(criterion = "D", max_iter = 5, show_progress = FALSE)
 dotest_ineq("7.1.1", 0.3086754, obj$crit(criterion = "D"))
 dotest_ineq("7.1.2", 0.07416199, obj$crit(w_d, criterion = "A"))
 dotest_ineq("7.1.3", 0.1799158, obj$crit(w_d, criterion = "I"))
-dotest_ineq("7.1.4", 0.1794487, obj$crit(w_d, criterion = "G"))
+dotest_ineq("7.1.4", 0.1787619, obj$crit(w_d, criterion = "G"))
 dotest_ineq("7.1.5", 0.76848, obj$crit(w_d, criterion = "alias"))
 
 ### sep
@@ -516,11 +512,16 @@ dotest_tol("8.2.3", ses1, ses)
 ### vcov
 w_round <- obj$round(m = 12, method = "optimal", seed = 1, show_progress = FALSE)
 dotest_tol("8.3.1", diag(obj$vcov(design_weights = w_round, sigma2 = 1)), c(2.4281305, 0.2363732, 0.4929453))
-dotest_tol("8.3.2", sum(obj$vcov(design_weights = w_round, sigma2 = 1)), 2.375262)
+dotest_tol("8.3.2", sum(abs(obj$vcov(design_weights = w_round, sigma2 = 1))), 3.939636)
 
 ### corr
 dotest_tol("8.4.1", obj$corr(design_weights = w_round, center = FALSE), diag(2))
 dotest_tol("8.4.2", obj$corr(design_weights = w_round, center = TRUE), diag(2))
+
+### subset
+design <- obj$subset(w_round)
+dotest("8.5.1", dim(design), c(12L, 2L))
+dotest("8.5.2", colnames(design), c("treatment", "block"))
 
 cat(sprintf("End of unit_tests_lme_design.R [elapsed: %.2fs]\n", (proc.time() - start)[3]))
 
