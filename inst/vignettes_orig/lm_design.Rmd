@@ -241,7 +241,7 @@ design$optimize(criterion = "alias", scs_control = list(eps_rel = 1e-3)) |> roun
 As demonstrated in the initial example, the `$round()` method is used to round an approximate (optimal) design to an exact integer design with a given number of observations. The default rounding method is `"optimal"` rounding, which executes a number (`n_repeats`) of repeated Fedorov point-exchange procedures [@F72] starting from randomly sampled versions of the distribution of approximate design weights, or from *efficiently rounded* designs [@PR92] if the size of the exact design is sufficiently large. The optimality criterion is recycled from the `"criterion"` attribute in the design weights vector (`design$design_weights`) populated by `$optimize()`, but can be overridden by passing a new `criterion` to `$round()` itself. Instead of starting the rounding procedure from a rounded version of the approximate design in `design$design_weights`, it is also possible to provide a custom weight vector via the `design_weights` argument or to round from a random initial design by setting `design_weights = FALSE`.
 
 ```{r}
-(exact_design <- design$round(m = 16, method = "optimal", criterion = "I", design_weights = design_weights, n_repeats = 100, seed = 1))
+(exact_design <- design$round(m = 15, method = "optimal", criterion = "I", design_weights = design_weights, n_repeats = 100, seed = 1))
 ```
 
 ```{r lm_design-3, echo = FALSE, fig.dim = c(10, 3), out.width="70%"}
@@ -342,7 +342,7 @@ problem in two ways; either through the weight vector $\boldsymbol{v} = (v_1,\ld
 or through the cost vector $\boldsymbol{c} = (c_1,\ldots,c_n)'$. The weights $\boldsymbol{v}$ 
 are incorporated as multiplicative terms on the level of the information matrix, whereas 
 the costs $\boldsymbol{c}$ are penalizing the optimality criterion value using an additive 
-penalty term. Both options have intuitive interpretations; a heterogenous weight vector 
+penalty term. Both options have intuitive interpretations; a heterogeneous weight vector 
 $\boldsymbol{v}$ produces the optimal design of a weighted linear regression model. For a 
 non-zero cost vector $\boldsymbol{c}$, the optimization problem above is the dual form 
 (with Lagrange multiplier $\alpha$) of the cost-constrained design optimization problem:

@@ -2,7 +2,7 @@
 title: "Nonlinear/Linear mixed model optimal design"
 output:
   rmarkdown::html_vignette
-date: "2026-08-31"
+date: "2026-10-05"
 vignette: >
   %\VignetteIndexEntry{Nonlinear/Linear mixed model optimal design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -71,12 +71,12 @@ design$optimize(criterion = "I") |> round(2)
 #>   [1] 0.07 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.10 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
 #>  [30] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.02 0.13 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.12 0.00 0.00 0.00
 #>  [59] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
-#>  [88] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.10 0.09 0.00 0.00 0.00 0.00 0.00
+#>  [88] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.09 0.09 0.00 0.00 0.00 0.00 0.00
 #> [117] 0.00 0.00 0.00 0.00 0.02 0.00 0.00 0.00 0.00 0.15 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
 #> [146] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.05 0.00 0.00 0.08 0.00 0.00 0.00 0.00 0.00 0.00 0.08
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.1770624
+#> [1] 0.1770623
 #> 
 #> attr(,"criterion")$crit
 #> [1] "I"
@@ -108,7 +108,7 @@ To round the approximate I-optimal design to an exact (integer) design with a gi
 #> [1] 0.1644273
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.92864
+#> [1] 0.9286406
 ```
 
 <div class="figure">
@@ -140,7 +140,7 @@ design$optimize(criterion = "I") |> round(2)
 #> [146] 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.04 0.00 0.00 0.07 0.00 0.00 0.00 0.00 0.00 0.00 0.06
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.09436277
+#> [1] 0.09436355
 #> 
 #> attr(,"criterion")$crit
 #> [1] "I"
@@ -170,7 +170,7 @@ If cost penalties are present in the `$cost` field, these are passed down to the
 #> [1] 0.08771622
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9295639
+#> [1] 0.9295562
 ```
 
 <div class="figure">
@@ -211,15 +211,15 @@ design$optimize(criterion = "I") |> round(2)
 #> [59] 0.04 0.06
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.1440584
+#> [1] 0.1440571
 #> 
 #> attr(,"criterion")$crit
 #> [1] "I"
 
 ## verify stratification
 tapply(design$design_weights, design$data$x1, sum)
-#>    0   20   40  100 
-#> 0.25 0.25 0.25 0.25
+#>         0        20        40       100 
+#> 0.2499887 0.2500048 0.2500008 0.2500130
 ```
 
 <div class="figure">
@@ -242,7 +242,7 @@ If stratification constraints are present in the `$strata` field, these are pass
 #> [1] 0.1362853
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9460417
+#> [1] 0.9460503
 #> 
 #> attr(,"strata")
 #>   0  20  40 100 
@@ -339,10 +339,10 @@ Compared to `lm_design` and `nlm_design`, the `$optimize()` method requires an a
 
 ``` r
 design$optimize(criterion = "D", max_iter = 10) |> round(2)
-#>  [1] 0.03 0.03 0.03 0.03 0.03 0.03 0.14 0.14 0.14 0.14 0.14 0.14
+#>  [1] 0.03 0.03 0.03 0.03 0.03 0.03 0.13 0.14 0.13 0.14 0.14 0.14
 #> attr(,"criterion")
 #> attr(,"criterion")$crit.value
-#> [1] 0.3111273
+#> [1] 0.3110944
 #> 
 #> attr(,"criterion")$crit
 #> [1] "D"
@@ -369,7 +369,7 @@ design$round(m = 6, method = "optimal", seed = 1)
 #> [1] 0.2814851
 #> 
 #> attr(,"criterion")$crit.rel.eff
-#> [1] 0.9047262
+#> [1] 0.904822
 ```
 
 #### Split-plot optimal design

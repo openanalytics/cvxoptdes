@@ -2,7 +2,7 @@ PKGNAME=cvxoptdes
 PKGVERS=$(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 
 .PHONY: doc vignette vignette-mkl readme manual globals test test-mkl covr build install install-mkl check check-valgrind \
-    packamon docker docker-check docker-test docker-asan docker-rchk pkgdocs-build pkgdocs-hugo pkgdocs-hugo-serve pkgdocs-server
+    packamon docker docker-check docker-test docker-asan docker-rchk
 
 all: doc check clean
 
@@ -84,25 +84,6 @@ docker-asan:
 	"R CMD INSTALL --preclean . && \
 	Rscript --no-save tests/test_$(PKGNAME).R"
 		
-pkgdocs-build:
-	Rscript --no-save inst/build/build_docs.R $(CURDIR) && \
-	cd docs && \
-	hugo mod get github.com/google/docsy/theme@v0.16.0 && hugo mod tidy && \
-	npm install --save-dev @docsy/theme
-
-pkgdocs-hugo:
-	hugo build --source $(CURDIR)/docs
-
-pkgdocs-hugo-docker:
-	docker run --rm -it --user $(shell id -u):$(shell id -g) --entrypoint sh -w /src -v $(CURDIR)/docs:/src \
-	floryn90/hugo:ext-alpine -c "npm ci --cache /tmp/.npm-cache && hugo --gc --minify"
-
-pkgdocs-serve:
-	python3 -m http.server --directory $(CURDIR)/docs/public 1313
-
-pkgdocs-hugo-serve: pkgdocs-hugo
-	python3 -m http.server --directory $(CURDIR)/docs/public 1313
-
 clean:
 	$(RM) -r $(PKGNAME).Rcheck/
 	$(RM) -f *.gcno

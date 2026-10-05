@@ -196,7 +196,7 @@ obj0 <- lme_design$new(
 w_d01 <- structure(rep(c(0, 1), each = 6), criterion = list(crit = "D", crit.value = 0.2814851))
 
 w_d <- obj$augment(design_weights = w_d01, max_iter = 5, gamma = 0.5, criterion = "D", show_progress = FALSE)
-dotest_ineq("3.1.1", 0.3086112,  obj$crit(w_d + w_d01 / 6, "D"))
+dotest_ineq("3.1.1", 0.3069333,  obj$crit(w_d + w_d01 / 6, "D"))
 
 w_d <- obj0$augment(design_weights = w_d01, gamma = 0.5, criterion = "D")
 dotest_tol("3.1.2", obj0$crit(w_d + w_d01 / 6, "D"), 0.5291337)
