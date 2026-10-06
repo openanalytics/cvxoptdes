@@ -1,8 +1,9 @@
 PKGNAME=cvxoptdes
 PKGVERS=$(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 
-.PHONY: doc vignette vignette-mkl readme manual globals test test-mkl covr build install install-mkl check check-valgrind \
-    packamon docker docker-check docker-test docker-asan docker-rchk
+.PHONY: doc vignette vignette-mkl readme manual globals examples test test-mkl covr build 
+	install install-mkl check check-valgrind packamon docker docker-check docker-test 
+	docker-asan docker-rchk docker-check-clang test-valgrind
 
 all: doc check clean
 
@@ -27,6 +28,9 @@ globals:
 test:
 	Rscript --vanilla tests/test_$(PKGNAME).R
 
+test-valgrind:
+	R -d valgrind -e "lapply(list.files(system.file(\"unit_tests\", package = \"$(PKGNAME)\"), full.names=TRUE), source, local=TRUE)"
+
 test-mkl:
 	Rscript-mkl --no-save tests/test_$(PKGNAME).R
 
@@ -45,6 +49,9 @@ install:
 install-mkl:
 	. /opt/intel/oneapi/setvars.sh && \
 	R-mkl CMD INSTALL --preclean .
+
+examples:
+	R -d valgrind -e "tools::testInstalledPackage(\"$(PKGNAME)\", types = \"examples\")"
 
 check: build
 	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz
@@ -84,7 +91,13 @@ docker-asan:
 	"R CMD INSTALL --preclean . && \
 	Rscript --no-save tests/test_$(PKGNAME).R"
 		
+docker-check-clang: build
+	docker run -it --rm -v $(CURDIR):/$(PKGNAME) -w /$(PKGNAME) ubuntu-clang:latest \
+	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz --no-manual
+
 clean:
 	$(RM) -r $(PKGNAME).Rcheck/
 	$(RM) -f *.gcno
 	$(RM) -rf covr
+	$(RM) -f $(PKGNAME)-Ex.*
+	$(RM) -rf src/scs/build/

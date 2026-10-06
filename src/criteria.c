@@ -463,6 +463,10 @@ void D_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_int 
         ni += 2;
     }
 
+    // sanity check
+    if (ni != nnz)
+        Rf_error("R internal error: nonzero enty mismatch (%d written, %d allocated)", ni, nnz);
+
     // CSC format
     // column pointers
     R_len_t *ccount = (R_len_t *)S_alloc(ntot, sizeof(R_len_t));
@@ -788,6 +792,10 @@ void D_spec_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs
             irow++;
         }
     }
+
+    // sanity check
+    if (ni != nnz)
+        Rf_error("R internal error: nonzero enty mismatch (%d written, %d allocated)", ni, nnz);
 
     // CSC format
     // column pointers
@@ -1237,6 +1245,10 @@ void A_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_int 
         }
     }
 
+    // sanity check
+    if (ni != nnz)
+        Rf_error("R internal error: nonzero enty mismatch (%d written, %d allocated)", ni, nnz);
+
     // CSC format
     // column pointers
     R_len_t *ccount = (R_len_t *)S_alloc(ntot, sizeof(R_len_t));
@@ -1631,6 +1643,10 @@ void G_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_int 
         }
     }
 
+    // sanity check
+    if (ni != nnz)
+        Rf_error("R internal error: nonzero enty mismatch (%d written, %d allocated)", ni, nnz);
+
     // CSC format
     // column pointers
     R_len_t *ccount = (R_len_t *)S_alloc(ntot, sizeof(R_len_t));
@@ -1897,6 +1913,10 @@ void alias_opt_populate_Abc(pdata *pars, R_len_t p, R_len_t n, R_len_t nnz, scs_
             irow += 4;
         }
     }
+
+    // sanity check
+    if (ni != nnz)
+        Rf_error("R internal error: nonzero enty mismatch (%d written, %d allocated)", ni, nnz);
 
     // CSC format
     // column pointers

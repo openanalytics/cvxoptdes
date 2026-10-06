@@ -6,6 +6,7 @@
 static double d_crit(double *M, R_len_t p, Rboolean return_exp) 
 {
         /* M = L' * L */
+        double crit = 0.0;
         double *L = (double *)R_alloc(p * p, sizeof(double));
         memcpy(L, M, p * p * sizeof(double));
         int info = -1;
@@ -13,21 +14,25 @@ static double d_crit(double *M, R_len_t p, Rboolean return_exp)
         F77_CALL(dpotrf)(&uplo, &p, L, &p, &info FCONE);
         if (info != 0)
         {
-            return return_exp ? 0.0: R_NegInf;
+            crit = return_exp ? 0.0: R_NegInf;
         }
-        double crit = 0.0;
-        for (R_len_t i = 0; i < p; i++)
+        else
         {
-            double Lii = L[i + i * p] < DBL_EPSILON ? DBL_EPSILON : L[i + i * p];
-            crit += 2.0 * log(Lii) / p; // |M|^{1/p}
+            for (R_len_t i = 0; i < p; i++)
+            {
+                double Lii = L[i + i * p] < DBL_EPSILON ? DBL_EPSILON : L[i + i * p];
+                crit += 2.0 * log(Lii) / p; // |M|^{1/p}
+            }
+            crit = return_exp ? exp(crit) : crit;
         }
-        return return_exp ? exp(crit) : crit;
+        return crit;
 }
 
 static double i_crit(double *M, double *XtX, R_len_t p, R_len_t n, Rboolean return_inv)
 {
     /* M = L' * L */
-    double *L1 = (double *)R_alloc(p * p, sizeof(double));  // placeholder matrix
+    double crit = 0.0;
+    double *L1 = (double *)R_alloc(p * p, sizeof(double)); // placeholder matrix
     double *L = (double *)R_alloc(p * p, sizeof(double));
     memcpy(L1, XtX, p * p * sizeof(double));
     memcpy(L, M, p * p * sizeof(double));
@@ -43,24 +48,28 @@ static double i_crit(double *M, double *XtX, R_len_t p, R_len_t n, Rboolean retu
     F77_CALL(dpotrf)(&uplo, &p, L, &p, &info FCONE);
     if (info != 0)
     {
-        return return_inv ? 0.0 : R_PosInf;
+        crit = return_inv ? 0.0 : R_PosInf;
     }
-    /* L1 := L^{-1} * XtX */
-    F77_CALL(dtrsm)(&sideL, &uplo, &transN, &diag, &p, &p, &one, L, &p, L1, &p FCONE FCONE FCONE FCONE);
-    /* L1 := L^{-1} * XtX * L^{-1}' */
-    F77_CALL(dtrsm)(&sideR, &uplo, &transT, &diag, &p, &p, &one, L, &p, L1, &p FCONE FCONE FCONE FCONE);
-    /* tr(X * M^{-1} * X') = tr(L^{-1} * X'X * L^{-1}') */
-    double crit = 0.0;
-    for (R_len_t i = 0; i < p; i++)
+    else 
     {
-        crit += L1[i + i * p] / n;
+        /* L1 := L^{-1} * XtX */
+        F77_CALL(dtrsm)(&sideL, &uplo, &transN, &diag, &p, &p, &one, L, &p, L1, &p FCONE FCONE FCONE FCONE);
+        /* L1 := L^{-1} * XtX * L^{-1}' */
+        F77_CALL(dtrsm)(&sideR, &uplo, &transT, &diag, &p, &p, &one, L, &p, L1, &p FCONE FCONE FCONE FCONE);
+        /* tr(X * M^{-1} * X') = tr(L^{-1} * X'X * L^{-1}') */
+        for (R_len_t i = 0; i < p; i++)
+        {
+            crit += L1[i + i * p] / n;
+        }
+        crit = return_inv ? 1.0 / crit : crit;
     }
-    return return_inv ? 1.0 / crit : crit;
+    return crit;
 }
 
 static double a_crit(double *M, R_len_t p, Rboolean return_inv)
 {
     /* M = L' * L */
+    double crit = 0.0;
     double *L = (double *)R_alloc(p * p, sizeof(double));
     memcpy(L, M, p * p * sizeof(double));
     int info = -1;
@@ -69,23 +78,27 @@ static double a_crit(double *M, R_len_t p, Rboolean return_inv)
     F77_CALL(dpotrf)(&uplo, &p, L, &p, &info FCONE);
     if (info != 0)
     {
-        return return_inv ? 0.0 : R_PosInf;
+        crit = return_inv ? 0.0 : R_PosInf;
     }
-    /* L := L^{-1} */
-    F77_CALL(dtrtri)(&uplo, &diag, &p, L, &p, &info FCONE FCONE);
-    /* tr(M^{-1}) = ||L^{-1}||^2 */
-    double crit = 0.0;
-    for (R_len_t j = 0; j < p; j++)
+    else 
     {
-        for (R_len_t i = j; i < p; i++)
-            crit += L[i + j * p] * L[i + j * p];
+        /* L := L^{-1} */
+        F77_CALL(dtrtri)(&uplo, &diag, &p, L, &p, &info FCONE FCONE);
+        /* tr(M^{-1}) = ||L^{-1}||^2 */
+        for (R_len_t j = 0; j < p; j++)
+        {
+            for (R_len_t i = j; i < p; i++)
+                crit += L[i + j * p] * L[i + j * p];
+        }
+        crit = return_inv ? 1.0 / crit : crit;
     }
-    return return_inv ? 1.0 / crit : crit;
+    return crit;
 }
 
 static double g_crit(double *M, double *X, R_len_t p, R_len_t n)
 {
     /* M = L' * L */
+    double crit = 0.0;
     double *L1 = (double *)R_alloc(n * p, sizeof(double)); // placeholder matrix
     double *L = (double *)R_alloc(p * p, sizeof(double));
     memcpy(L1, X, n * p * sizeof(double));
@@ -98,27 +111,27 @@ static double g_crit(double *M, double *X, R_len_t p, R_len_t n)
     const char transT = 'T';
 
     F77_CALL(dpotrf)(&uplo, &p, L, &p, &info FCONE);
-    if (info != 0)
+    if (info == 0)
     {
-        return 0.0;
-    }
-    /* L1 := X * L^{-1}' */
-    F77_CALL(dtrsm)(&sideR, &uplo, &transT, &diag, &n, &p, &one, L, &p, L1, &n FCONE FCONE FCONE FCONE);
+        /* L1 := X * L^{-1}' */
+        F77_CALL(dtrsm)(&sideR, &uplo, &transT, &diag, &n, &p, &one, L, &p, L1, &n FCONE FCONE FCONE FCONE);
 
-    /* diag(X * M^{-1} * X') = ||(X * L{-1}')_i||^2 */
-    double crit = 0.0;
-    for (int i = 0; i < n; i++)
-    {
-        double s = 0.0;
-        for (int k = 0; k < p; k++)
+        /* diag(X * M^{-1} * X') = ||(X * L{-1}')_i||^2 */
+        double crit = 0.0;
+        for (int i = 0; i < n; i++)
         {
-            double v = L1[i + k * n];
-            s += v * v;
+            double s = 0.0;
+            for (int k = 0; k < p; k++)
+            {
+                double v = L1[i + k * n];
+                s += v * v;
+            }
+            if(s > crit)
+                crit = s;
         }
-        if(s > crit)
-            crit = s;
+        crit = 1.0 / crit;
     }
-    return 1.0 / crit;
+    return crit;
 }
 
 static double alias_crit(double *M, double *ortho, R_len_t p, Rboolean return_one_min)
