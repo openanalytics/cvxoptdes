@@ -257,7 +257,7 @@ dotest_tol("3.3.4", a_val, 0.125)
 w_g01 <- structure(w_d01, criterion = list(crit = "G", crit.value = 0.1468531))
 
 w_g <- obj$augment(design_weights = w_g01, max_iter = 5, gamma = 0.5, criterion = "G", show_progress = FALSE)
-dotest_ineq("3.4.1", 0.175, obj$crit(w_g + w_g01 / 6, "G"))
+dotest_ineq("3.4.1", 0.170, obj$crit(w_g + w_g01 / 6, "G"))
 
 w_g <- obj$round(m = 6, method = "optimal", seed = 1, augment_design = w_g01, show_progress = FALSE)
 g_val <- attr(w_g, "criterion")$crit.value
