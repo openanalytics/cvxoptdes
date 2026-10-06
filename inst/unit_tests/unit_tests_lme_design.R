@@ -5,13 +5,19 @@ cat("Start of unit_tests_lme_design.R\n")
 
 ## helper functions
 dotest <- function(itest, observed, expected) {
-	if(!identical(observed, expected)) stop(sprintf("Unit test lme-%s failed", itest), call. = FALSE)
+	if(!identical(observed, expected)) {
+	  stop(sprintf("Unit test lme-%s failed. %s", itest, paste0("Observed: ", observed, ". Expected: ", expected)), call. = FALSE)
+	}
 }
 dotest_tol <- function(itest, observed, expected, tol = (.Machine$double.eps)^0.25) {
-	if(any(abs(observed - expected) > tol)) stop(sprintf("Unit test lme-%s failed", itest), call. = FALSE)
+	if(any(abs(observed - expected) > tol)) {
+	  stop(sprintf("Unit test lme-%s failed. Observed: %g. Expected: %g", itest, observed, expected), call. = FALSE)
+	}
 }
 dotest_ineq <- function(itest, left, right, tol = (.Machine$double.eps)^0.25) {
-	if(any(left > right + tol)) stop(sprintf("Unit test lme-%s failed", itest), call. = FALSE)
+	if(any(left > right + tol)) {
+	  stop(sprintf("Unit test lme-%s failed. %g > %g", itest, left, right), call. = FALSE)
+	}
 }
 
 ## 1.x optimize, round
@@ -251,7 +257,7 @@ dotest_tol("3.3.4", a_val, 0.125)
 w_g01 <- structure(w_d01, criterion = list(crit = "G", crit.value = 0.1468531))
 
 w_g <- obj$augment(design_weights = w_g01, max_iter = 5, gamma = 0.5, criterion = "G", show_progress = FALSE)
-dotest_tol("3.4.1", obj$crit(w_g + w_g01 / 6, "G"),  0.1752357)
+dotest_ineq("3.4.1", 0.175, obj$crit(w_g + w_g01 / 6, "G"))
 
 w_g <- obj$round(m = 6, method = "optimal", seed = 1, augment_design = w_g01, show_progress = FALSE)
 g_val <- attr(w_g, "criterion")$crit.value

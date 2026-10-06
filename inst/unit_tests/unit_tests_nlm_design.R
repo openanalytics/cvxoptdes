@@ -5,13 +5,19 @@ cat("Start of unit_tests_nlm_design.R\n")
 
 ## helper functions
 dotest <- function(itest, observed, expected) {
-	if(!identical(observed, expected)) stop(sprintf("Unit test nlm-%s failed", itest), call. = FALSE)
+  if(!identical(observed, expected)) {
+    stop(sprintf("Unit test nlm-%s failed. %s", itest, paste0("Observed: ", observed, ". Expected: ", expected)), call. = FALSE)
+  }
 }
 dotest_tol <- function(itest, observed, expected, tol = (.Machine$double.eps)^0.25) {
-	if(any(abs(observed - expected) > tol)) stop(sprintf("Unit test nlm-%s failed", itest), call. = FALSE)
+  if(any(abs(observed - expected) > tol)) {
+    stop(sprintf("Unit test nlm-%s failed. Observed: %g. Expected: %g", itest, observed, expected), call. = FALSE)
+  }
 }
 dotest_ineq <- function(itest, left, right, tol = (.Machine$double.eps)^0.25) {
-	if(any(left > right + tol)) stop(sprintf("Unit test nlm-%s failed", itest), call. = FALSE)
+  if(any(left > right + tol)) {
+    stop(sprintf("Unit test nlm-%s failed. %g > %g", itest, left, right), call. = FALSE)
+  }
 }
 
 ## 1.x optimize, round methods
