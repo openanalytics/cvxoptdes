@@ -111,13 +111,12 @@ static double g_crit(double *M, double *X, R_len_t p, R_len_t n)
     const char transT = 'T';
 
     F77_CALL(dpotrf)(&uplo, &p, L, &p, &info FCONE);
-    if (info == 0)
+    if (!info)
     {
         /* L1 := X * L^{-1}' */
         F77_CALL(dtrsm)(&sideR, &uplo, &transT, &diag, &n, &p, &one, L, &p, L1, &n FCONE FCONE FCONE FCONE);
 
         /* diag(X * M^{-1} * X') = ||(X * L{-1}')_i||^2 */
-        double crit = 0.0;
         for (int i = 0; i < n; i++)
         {
             double s = 0.0;
