@@ -3,6 +3,9 @@
 \name{lme_design}
 \alias{lme_design}
 \title{Penalized linear mixed model optimal design}
+\value{
+\code{R6}-object of class \code{lme_design} if called with \code{lme_design$new()}.
+}
 \description{
 An R6 class for managing penalized optimal experiment designs for random intercept linear mixed models.
 This class encapsulates a random intercept linear mixed model, the discrete design grid,
@@ -152,7 +155,6 @@ if(FALSE) {
    )
   mirai::daemons(0)
 }
-
 }
 \section{Super class}{
 \code{\link[cvxoptdes:lm_design]{lm_design}} -> \code{lme_design}
@@ -266,6 +268,9 @@ the standard (non-penalized) optimal design problem is solved.}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    \code{lme_design} \code{R6}-object
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -285,6 +290,9 @@ Inputs should be named \code{formula}, \code{data}, \code{eta}, \code{weights}, 
       \item{\code{...}}{named arguments \code{formula}, \code{data}, \code{eta}, \code{weights}, \code{cost}, \code{alpha}, \code{lambda} and/or \code{upper}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    none
   }
 }
 
@@ -310,6 +318,9 @@ column names present in \code{data}, in which case the strata are defined by the
 as the number of factor levels in \code{strata}. If \code{NULL}, each stratum is assigned the same weight proportion.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    none
   }
 }
 
@@ -357,6 +368,9 @@ for the available control parameters and their default values.}
 \code{max_iter > 1}). Defaults to \code{TRUE}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
   }
 }
 
@@ -410,6 +424,9 @@ for the available control parameters and their default values.}
 \code{max_iter > 1}). Defaults to \code{TRUE}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
   }
 }
 
@@ -490,6 +507,9 @@ environments of the background R processes, which may result in increased runtim
 especially when \code{n_repeats} is small or the rounding/exchange algorithm does not take much time to complete.
 }
   }
+  \subsection{Returns}{
+    numeric vector
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -566,6 +586,9 @@ environments of the background R processes, which may result in increased runtim
 especially when \code{n_repeats} is small or the rounding/exchange algorithm does not take much time to complete.
 }
   }
+  \subsection{Returns}{
+    numeric vector
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -639,6 +662,9 @@ design weights remain unscaled, which for the default approximate (optimal) desi
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric matrix
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -670,6 +696,9 @@ can be evaluated by \code{$formula}.}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric vector
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -700,6 +729,9 @@ The vector must be the same length as the number of design points in \code{data}
 correlation matrix (without random effects) \eqn{R \ = \ D^{-1/2}(X_c^T \Omega X_c)D^{-1/2}} is returned.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric matrix
   }
 }
 

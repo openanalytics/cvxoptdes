@@ -182,7 +182,7 @@
 #'    )
 #'   mirai::daemons(0)
 #' }
-#'
+#' @return \code{R6}-object of class \code{lme_design} if called with \code{lme_design$new()}.
 #' @export
 lme_design <- R6Class(
   "lme_design",
@@ -210,6 +210,7 @@ lme_design <- R6Class(
     #' (single) variance component of the random effects and \eqn{\sigma_e^2} is the error variance.
     #' @param contrasts optional contrasts used when evaluating the fixed effects formula \code{fix.eff}.
     #' @param ... any additional arguments passed to \link{model.matrix} when evaluating the fixed effects formula \code{fix.eff}.
+    #' @return \code{lme_design} \code{R6}-object
     initialize = function(formula, data, eta, weights = NULL, cost = NULL, contrasts = NULL, alpha = 1, lambda = 0, upper = 1, ...) {
       stopifnot(
         inherits(formula, "formula"),
@@ -264,6 +265,7 @@ lme_design <- R6Class(
     #' Updates the fields of an existing object.
     #' Inputs should be named \code{formula}, \code{data}, \code{eta}, \code{weights}, \code{cost}, \code{alpha}, \code{lambda} and/or \code{upper} respectively.
     #' @param ... named arguments \code{formula}, \code{data}, \code{eta}, \code{weights}, \code{cost}, \code{alpha}, \code{lambda} and/or \code{upper}.
+    #' @return none
     update = function(...) {
 
       dots <- list(...)
@@ -355,6 +357,7 @@ lme_design <- R6Class(
     #' \link{model.frame} obtained from the \link{formula}.
     #' @param proportions an optional numeric vector containing the weight proportions of the individual strata. Must be of the same length
     #' as the number of factor levels in \code{strata}. If \code{NULL}, each stratum is assigned the same weight proportion.
+    #' @return none
     stratify = function(strata, proportions = NULL) {
 
       super$stratify(
@@ -375,6 +378,7 @@ lme_design <- R6Class(
     #' search to determine a new set of approximate design weights.
     #' @param show_progress logical, display a progress bar during the rounding procedure (only if
     #' \code{max_iter > 1}). Defaults to \code{TRUE}.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     optimize = function(criterion = c("D", "A", "I", "G", "alias"), max_iter = 1, tol = .Machine$double.eps^(1/4),
                         scs_control = scs_control_dflt(), verbose = FALSE, return_value = TRUE, show_progress = TRUE) {
       stopifnot(
@@ -506,6 +510,7 @@ lme_design <- R6Class(
     #' search to determine a new set of approximate design weights.
     #' @param show_progress logical, display a progress bar during the rounding procedure (only if
     #' \code{max_iter > 1}). Defaults to \code{TRUE}.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     augment = function(design_weights, max_iter = 1, gamma = 0.5, criterion = c("D", "A", "I", "G", "alias"), tol = .Machine$double.eps^(1/4),
                        scs_control = scs_control_dflt(), verbose = FALSE, return_value = TRUE, show_progress = TRUE) {
 
@@ -691,6 +696,7 @@ lme_design <- R6Class(
     #' \code{design_weights} has no \code{"criterion"} attribute, or to override the criterion specified in the \code{"criterion"} attribute.
     #' If specified, must be one of \code{"D"}, \code{"A"}, \code{"I"}, \code{"G"} or \code{"alias"}.}
     #' }
+    #' @return numeric vector
     round = function(m, method = c("optimal", "efficient"), max_iter = 100, n_repeats = 10, replicates = TRUE,
                      tol = .Machine$double.eps^(1/3), seed = NULL, design_weights = TRUE, augment_design =  NULL, show_progress = TRUE, ...) {
       ## check arguments
@@ -964,6 +970,7 @@ lme_design <- R6Class(
     #' If specified, must be one of \code{"D"}, \code{"A"}, \code{"I"}, or \code{"G"}.
     #' }
     #' }
+    #' @return numeric vector
     round_split_plot = function(m, hard_to_change, max_iter = 100, n_repeats = 10, replicates = TRUE, tol = .Machine$double.eps^(1/3), seed = NULL,
                                 design_weights = NULL, augment_design = NULL, show_progress = TRUE, ...) {
       ## check arguments
@@ -1321,6 +1328,7 @@ lme_design <- R6Class(
     #' design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the estimated covariance matrix.
     #' @param sigma2 numeric error variance used to scale the covariance matrix. Defaults to 1, returning the unscaled covariance matrix.
+    #' @return numeric matrix
     vcov = function(m, design_weights = NULL, sigma2 = 1) {
       ## check arguments
       stopifnot(
@@ -1381,6 +1389,7 @@ lme_design <- R6Class(
     #' can be evaluated by \code{$formula}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the estimated covariance matrix.
     #' @param sigma2 numeric error variance used to scale the standard errors. Defaults to 1, returning the standardized standard error of prediction.
+    #' @return numeric vector
     sep = function(m, newdata, design_weights = NULL, sigma2 = 1) {
       if(!missing(newdata)) {
         if(is.data.frame(newdata) || is.matrix(newdata)) {
@@ -1418,6 +1427,7 @@ lme_design <- R6Class(
     #' @param center logical, whether to center the design columns when evaluating the correlation matrix, defaults to \code{TRUE}.
     #' @param unscaled logical value, whether to include \eqn{V^{-1}} in the calculation of \eqn{R}. If \code{TRUE}, the ordinary
     #' correlation matrix (without random effects) \eqn{R \ = \ D^{-1/2}(X_c^T \Omega X_c)D^{-1/2}} is returned.
+    #' @return numeric matrix
     corr = function(design_weights = NULL, center = TRUE, unscaled = FALSE) {
       ## check arguments
       if(is.null(design_weights)) {

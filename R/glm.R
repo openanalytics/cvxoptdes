@@ -154,6 +154,7 @@
 #' (exact_design <- design$round(m = 18, method = "optimal", seed = 1))
 #' design$subset(replicates = exact_design)
 #'
+#' @return \code{R6}-object of class \code{glm_design} if called with \code{glm_design$new()}.
 #' @export
 glm_design <- R6Class(
   "glm_design",
@@ -180,6 +181,7 @@ glm_design <- R6Class(
     #' family with \code{"identity"} link function.
     #' @param contrasts optional contrasts used when evaluating the linear model formula.
     #' @param ... any additional arguments passed to \link{model.matrix}.
+    #' @return  \code{glm_design} \code{R6}-object
     initialize = function(formula, data, theta, family = gaussian(), weights = NULL, cost = NULL, contrasts = NULL, alpha = 1, lambda = 0, upper = 1, ...) {
 
       stopifnot("'family' must be an object of class \"family\", (e.g. gaussian(link = \"identity\")" = inherits(family, "family"))
@@ -229,6 +231,7 @@ glm_design <- R6Class(
     #' \code{alpha}, \code{lambda} and/or \code{upper}.
     #' @param ... named arguments \code{formula}, \code{data}, \code{theta}, \code{family}, \code{weights}, \code{cost}, 
     #' \code{alpha}, \code{lambda} and/or \code{upper}.
+    #' @return none
     update = function(...) {
 
       dots <- list(...)
@@ -321,6 +324,7 @@ glm_design <- R6Class(
     #' \link{model.frame} obtained from the \link{formula}.
     #' @param proportions an optional numeric vector containing the weight proportions of the individual strata. Must be of the same length
     #' as the number of factor levels in \code{strata}. If \code{NULL}, each stratum is assigned the same weight proportion.
+    #' @return none
     stratify = function(strata, proportions = NULL) {
 
       super$stratify(
@@ -336,6 +340,7 @@ glm_design <- R6Class(
     #' Also accepts a one-sided \link{formula} made up of parameters in \code{theta} and column names in \code{data}.
     #' @param gamma numeric contribution weight of the initial design in the augmented design problem, see also \sQuote{Augmented optimal design}
     #' above. Defaults to 0.5.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     augment = function(design_weights, gamma = 0.5, criterion = c("D", "A", "I", "G", "alias"), scs_control = scs_control_dflt(), verbose = FALSE, return_value = TRUE) {
 
       if(inherits(design_weights, "formula")) {
@@ -357,6 +362,7 @@ glm_design <- R6Class(
 
     #' @description
     #' Optimizes the penalized approximate design based on the selected criterion.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     optimize = function(criterion = c("D", "A", "I", "G", "alias"), scs_control = scs_control_dflt(), verbose = FALSE, return_value = TRUE) {
 
       super$optimize(
@@ -381,6 +387,7 @@ glm_design <- R6Class(
     #' @param tol numeric tolerance used as a threshold for mean absolute relative difference in design weights between iterations to stop early.
     #' @param design_weights (optional) vector of design weights used as initial approximate design.
     #' @param show_progress logical, display a progress bar during the iterative reweighting procedure. Defaults to \code{TRUE}.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     sparsify = function(max_iter, criterion = c("D", "A", "I", "G", "alias"), reweight_fun = c("entropy", "log-sum", "power"), eps = .Machine$double.eps,
                         tol = .Machine$double.eps^(1/4), p = 0.5, design_weights = NULL, scs_control = scs_control_dflt(),
                         return_value = TRUE, show_progress = TRUE) {
@@ -439,6 +446,7 @@ glm_design <- R6Class(
     #' \code{design_weights} has no \code{"criterion"} attribute, or to override the criterion specified in the \code{"criterion"} attribute.
     #' If specified, must be one of \code{"D"}, \code{"A"}, \code{"I"}, \code{"G"} or \code{"alias"}.}
     #' }
+    #' @return numeric vector
     round = function(m, method = c("optimal", "efficient", "dist-sum", "dist-min"), max_iter = 100, n_repeats = 10, replicates = TRUE,
                      tol = .Machine$double.eps^(1/3), seed = NULL, design_weights = TRUE, augment_design =  NULL, show_progress = TRUE, ...) {
 
@@ -495,6 +503,7 @@ glm_design <- R6Class(
     #' design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the estimated covariance matrix.
     #' @param sigma2 numeric error variance used to scale the covariance matrix. Defaults to 1, returning the unscaled covariance matrix.
+    #' @return numeric matrix
     vcov = function(m, design_weights = NULL, sigma2 = 1) {
 
       super$vcov(
@@ -524,6 +533,7 @@ glm_design <- R6Class(
     #' @param type the type of prediction required. The default choice \code{"link"} returns the standard error of prediction on the scale of the linear predictors, 
     #' whereas \code{"response"} returns the standard error of prediction on the scale of the response variable.
     #' @param sigma2 numeric error variance used to scale the standard errors. Defaults to 1, returning the standardized standard error of prediction.
+    #' @return numeric vector
     sep = function(m, newdata, design_weights = NULL, type = c("link", "response"), sigma2 = 1) {
       type <- match.arg(type, c("link", "response"))
       if(!missing(newdata)) {
@@ -565,6 +575,7 @@ glm_design <- R6Class(
     #' The vector must be the same length as the number of design points in \code{data}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the information matrix.
     #' @param center logical, whether to center the design columns when evaluating the correlation matrix, defaults to \code{TRUE}.
+    #' @return numeric matrix
     corr = function(design_weights = NULL, center = TRUE) {
 
       super$corr(

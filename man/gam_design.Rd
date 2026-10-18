@@ -3,6 +3,9 @@
 \name{gam_design}
 \alias{gam_design}
 \title{Penalized generalized additive model optimal design}
+\value{
+\code{R6}-object of class \code{gam_design} if called with \code{gam_design$new()}.
+}
 \description{
 An R6 class for managing penalized locally optimal experiment designs for generalized additive models.
 This class encapsulates the generalized additive model at a set of nominal parameter values, the discrete design grid,
@@ -234,6 +237,9 @@ the standard (non-penalized) optimal design problem is solved.}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    \code{gam_design} \code{R6}-object
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -255,6 +261,9 @@ Inputs should be named \code{formula}, \code{data}, \code{theta}, \code{family},
 \code{alpha}, \code{lambda} and/or \code{upper}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    none
   }
 }
 
@@ -280,6 +289,9 @@ column names present in \code{data}, in which case the strata are defined by the
 as the number of factor levels in \code{strata}. If \code{NULL}, each stratum is assigned the same weight proportion.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    none
   }
 }
 
@@ -322,6 +334,9 @@ for the available control parameters and their default values.}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -356,6 +371,9 @@ for the available control parameters and their default values.}
       \item{\code{return_value}}{return the optimal design weights. If set to \code{FALSE}, the design weights should be retrieved from the \code{design_weights} field.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
   }
 }
 
@@ -408,6 +426,9 @@ for the available control parameters and their default values.}
     The sparseness cost penalties are scaled by the same \code{alpha} tuning parameter as for a user-specific cost vector, see \code{\link{scs_control_dflt}}.
 If a cost vector \code{c_1,\ldots,c_n} associated to the design weights is already specified. The sparseness penalty costs are multiplied
 by the existing cost vector.
+  }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
   }
 }
 
@@ -474,6 +495,9 @@ If specified, must be one of \code{"D"}, \code{"A"}, \code{"I"}, \code{"G"} or \
 }}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric vector
   }
 }
 
@@ -546,6 +570,9 @@ design weights remain unscaled, which for the default approximate (optimal) desi
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric matrix
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -587,6 +614,9 @@ whereas \code{"response"} returns the standard error of prediction on the scale 
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric vector
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -616,6 +646,9 @@ The vector must be the same length as the number of design points in \code{data}
       \item{\code{center}}{logical, whether to center the design columns when evaluating the correlation matrix, defaults to \code{TRUE}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric matrix
   }
 }
 

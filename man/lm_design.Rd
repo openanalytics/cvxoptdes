@@ -3,6 +3,9 @@
 \name{lm_design}
 \alias{lm_design}
 \title{Penalized linear optimal design}
+\value{
+\code{R6}-object of class \code{lm_design} if called with \code{lm_design$new()}.
+}
 \description{
 An R6 class for managing penalized optimal experiment designs for linear models.
 This class encapsulates the linear model formula, the discrete design grid,
@@ -255,7 +258,6 @@ if(FALSE) {
   ## verify correlations
   design_ortho$corr(ortho_augment_design)
 }
-
 }
 \references{
 Pukelsheim, F., and Rieder S. (1992) \emph{"Efficient rounding of approximate designs"}, Biometrika.
@@ -388,6 +390,9 @@ are constrained to be equal to the numeric value in the second part of the formu
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    \code{lm_design} \code{R6}-object
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -409,6 +414,9 @@ Inputs should be named \code{formula}, \code{data}, \code{weights}, \code{orthog
 \code{col_means}, \code{alpha}, \code{lambda} and/or \code{upper}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    none
   }
 }
 
@@ -434,6 +442,9 @@ column names present in \code{data}, in which case the strata are defined by the
 as the number of factor levels in \code{strata}. If \code{NULL}, each stratum is assigned the same weight proportion.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    none
   }
 }
 
@@ -476,6 +487,9 @@ for the available control parameters and their default values.}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -510,6 +524,9 @@ for the available control parameters and their default values.}
       \item{\code{return_value}}{return the optimal design weights. If set to \code{FALSE}, the design weights can be obtained from the \code{design_weights} field.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
   }
 }
 
@@ -564,6 +581,9 @@ for the available control parameters and their default values.}
     The sparseness cost penalties are scaled by the same \code{alpha} tuning parameter as for a user-specific cost vector, see \code{\link{scs_control_dflt}}.
 If a cost vector \code{c_1,\ldots,c_n} associated to the design weights is already specified. The sparseness penalty costs are multiplied
 by the existing cost vector.
+  }
+  \subsection{Returns}{
+    numeric vector if \code{return_value = TRUE}, otherwise none
   }
 }
 
@@ -662,6 +682,9 @@ root directory when installing \code{cvxoptdes}. If installation fails, verify t
 present in \code{$HIGHS_HOME/include/highs/interfaces}, which is required to compile the source code.
 }
   }
+  \subsection{Returns}{
+    numeric vector
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -731,6 +754,9 @@ design weights remain unscaled, which for the default approximate (optimal) desi
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric matrix
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -762,6 +788,9 @@ can be evaluated by \code{$formula}.}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric vector
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -791,6 +820,9 @@ The vector must be the same length as the number of design points in \code{data}
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    numeric matrix
+  }
 }
 
 \if{html}{\out{<hr>}}
@@ -810,6 +842,9 @@ The vector must be the same length as the number of design points in \code{data}
       \item{\code{replicates}}{integer vector of design point replicates of the same length as the candidate grid in \code{data}}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
   }
 }
 

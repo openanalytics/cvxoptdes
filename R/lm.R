@@ -311,7 +311,7 @@
 #'   ## verify correlations
 #'   design_ortho$corr(ortho_augment_design)
 #' }
-#'
+#' @return \code{R6}-object of class \code{lm_design} if called with \code{lm_design$new()}.
 #' @export
 lm_design <- R6Class(
   "lm_design",
@@ -331,6 +331,7 @@ lm_design <- R6Class(
     #' @param formula a linear model defined as a one-sided \link{formula}.
     #' @param contrasts optional contrasts used when evaluating the linear model formula.
     #' @param ... any additional arguments passed to \link{model.matrix}.
+    #' @return \code{lm_design} \code{R6}-object
     initialize = function(formula, data, orthogonal = NULL, weights = NULL, cost = NULL, zeros = NULL, col_means = NULL,
                           contrasts = NULL, alpha = 1, lambda = 0, upper = 1, ...) {
 
@@ -393,6 +394,7 @@ lm_design <- R6Class(
     #' \code{col_means}, \code{alpha}, \code{lambda} and/or \code{upper}.
     #' @param ... named arguments \code{formula}, \code{data}, \code{weigts}, \code{orthogonal}, \code{cost}, \code{zeros},
     #' \code{col_means}, \code{alpha}, \code{lambda} and/or \code{upper}.
+    #' @return none
     update = function(...) {
 
       dots <- list(...)
@@ -514,6 +516,7 @@ lm_design <- R6Class(
     #' \link{model.frame} obtained from the \link{formula}.
     #' @param proportions an optional numeric vector containing the weight proportions of the individual strata. Must be of the same length
     #' as the number of factor levels in \code{strata}. If \code{NULL}, each stratum is assigned the same weight proportion.
+    #' @return none
     stratify = function(strata, proportions = NULL) {
 
       if(is.null(strata)) {
@@ -565,6 +568,7 @@ lm_design <- R6Class(
     #' Also accepts a one-sided \link{formula} made up of column names present in \code{data}.
     #' @param gamma numeric contribution weight of the initial design in the augmented design problem, see also \sQuote{Augmented optimal design}
     #' above. Defaults to 0.5.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     augment = function(design_weights, gamma = 0.5, criterion = c("D", "A", "I", "G", "alias"), scs_control = scs_control_dflt(), verbose = FALSE, return_value = TRUE) {
 
       if(inherits(design_weights, "formula")) {
@@ -622,6 +626,7 @@ lm_design <- R6Class(
 
     #' @description
     #' Optimizes the penalized approximate design based on the selected criterion.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     optimize = function(criterion = c("D", "A", "I", "G", "alias"), scs_control = scs_control_dflt(), verbose = FALSE, return_value = TRUE) {
 
       stopifnot(is.logical(verbose), is.logical(return_value))
@@ -674,6 +679,7 @@ lm_design <- R6Class(
     #' @param recenter logical, recenter design columns based on the current design weights after each iteration. Defaults to \code{FALSE}.
     #' @param design_weights (optional) vector of design weights used as initial approximate design.
     #' @param show_progress logical, display a progress bar during the iterative reweighting procedure. Defaults to \code{TRUE}.
+    #' @return numeric vector if \code{return_value = TRUE}, otherwise none
     sparsify = function(max_iter, criterion = c("D", "A", "I", "G", "alias"), reweight_fun = c("entropy", "log-sum", "power"), eps = .Machine$double.eps,
                         tol = .Machine$double.eps^(1/4), p = 0.5, design_weights = NULL, recenter = FALSE, scs_control = scs_control_dflt(),
                         return_value = TRUE, show_progress = TRUE) {
@@ -861,6 +867,7 @@ lm_design <- R6Class(
     #' }
     #' @seealso https://ergo-code.github.io/HiGHS/dev/installation/
     #' @seealso https://mirai.r-lib.org/
+    #' @return numeric vector
     round = function(m, method = c("optimal", "efficient", "dist-sum", "dist-min", "orthogonal"), max_iter = 100, n_repeats = 10, replicates = TRUE,
                      tol = .Machine$double.eps^(1/3), seed = NULL, design_weights = TRUE, augment_design =  NULL, show_progress = TRUE, ...) {
       ## check arguments
@@ -1228,6 +1235,7 @@ lm_design <- R6Class(
     #' design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the estimated covariance matrix.
     #' @param sigma2 numeric error variance used to scale the covariance matrix. Defaults to 1, returning the unscaled covariance matrix.
+    #' @return numeric matrix
     vcov = function(m, design_weights = NULL, sigma2 = 1) {
       ## check arguments
       stopifnot(
@@ -1288,6 +1296,7 @@ lm_design <- R6Class(
     #' can be evaluated by \code{$formula}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the estimated covariance matrix.
     #' @param sigma2 numeric error variance used to scale the standard errors. Defaults to 1, returning the standardized standard error of prediction.
+    #' @return numeric vector
     sep = function(m, newdata, design_weights = NULL, sigma2 = 1) {
       if(!missing(newdata)) {
         if(is.data.frame(newdata) || is.matrix(newdata)) {
@@ -1323,6 +1332,7 @@ lm_design <- R6Class(
     #' The vector must be the same length as the number of design points in \code{data}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the information matrix.
     #' @param center logical, whether to center the design columns when evaluating the correlation matrix, defaults to \code{TRUE}.
+    #' @return numeric matrix
     corr = function(design_weights = NULL, center = TRUE) {
       ## check arguments
       if(is.null(design_weights)) {
@@ -1362,6 +1372,7 @@ lm_design <- R6Class(
     #' Subsets the design points associated to an exact design vector with integer replicates as returned by \code{$round()}.
     #' The vector must be the same length as the number of design points in \code{data}.
     #' @param replicates integer vector of design point replicates of the same length as the candidate grid in \code{data}
+    #' @return data.frame
     subset = function(replicates) {
         n <- nrow(self$data)
         stopifnot(
