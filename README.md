@@ -5,16 +5,17 @@
 
 An R-package for *convex optimal experiment design*, using exclusively
 open-source optimization solvers. `cvxoptdes` provides an
-object-oriented interface (via [R6](https://r6.r-lib.org/)) for
-specifying and optimizing designs for linear models, generalized
-linear/additive models, nonlinear models, and random intercept linear
-mixed models. It supports optimization and augmentation of weighted,
-penalized and convex constrained approximate designs across a discrete
-grid of candidate points by solving a second-order cone program using
-the [Splitting Cone Solver (SCS)](https://www.cvxgrp.org/scs/) and
-optimal rounding to integer-valued designs using point-exchange
-algorithms or mixed-integer programming with the
-[HiGHS](https://highs.dev/) solver for orthogonally constrained designs.
+object-oriented interface (using [R6](https://r6.r-lib.org/)) to specify
+and optimize designs for linear models, generalized linear/additive
+models, nonlinear models, and random intercept linear mixed models. It
+supports optimization and augmentation of weighted, penalized and convex
+constrained approximate designs across a discrete grid of candidate
+points by solving a second-order cone program using the [Splitting Cone
+Solver (SCS)](https://www.cvxgrp.org/scs/) and optimal rounding to
+integer-valued designs using point-exchange algorithms or mixed-integer
+programming with the [HiGHS](https://highs.dev/) solver for orthogonally
+constrained designs. For details, see [Chau et
+al. (2026)](https://doi.org/10.48550/arXiv.2610.14288).
 
 ## Installation
 
@@ -147,6 +148,12 @@ design$vcov(design_weights = exact_design, sigma2 = 1)
 #> x1:x3             0.024 -0.001  0.003  0.001   0.000  -0.008   0.000  0.003  0.035 -0.005
 #> x2:x3            -0.024  0.003 -0.001 -0.001   0.008   0.000   0.000 -0.003 -0.005  0.035
 ```
+
+## Reference
+
+> Chau, J. and Segers, A. and Otava, M. and Karanja, S. (2026).
+> “cvxoptdes: convex optimal experiment design in R.”
+> <doi:10.48550/arXiv.2610.14288>. arXiv preprint.
 
 ## Links
 

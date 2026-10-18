@@ -15,3 +15,8 @@
 * ubuntu gcc R-release --use-valgrind (local install) 
 * macos clang ASAN/UBSAN R-devel (rhub)
 * ubuntu clang ASAN/UBSAN R-devel (rhub)
+
+## R CMD check results
+
+1 NOTE (ubuntu gcc/clang): 
+* Running R code in ‘test_cvxoptdes.R’ had CPU time 2.8 times elapsed time

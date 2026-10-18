@@ -1,0 +1,11 @@
+bibentry(
+  bibtype = "Unpublished",
+  title = "cvxoptdes: convex optimal experiment design in {R}",
+  author = as.person("Joris Chau, Alexandre Segers, Martin Otava, Stephen Karanja"),
+  year = "2026",
+  note    = "arXiv preprint",
+  primaryClass = "stat.ME",
+  doi = "10.48550/arXiv.2610.14288",
+  header = "To cite package 'cvxoptdes' in publications use:"
+)
+  

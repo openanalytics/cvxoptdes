@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "To cite package 'cvxoptdes' in publications use:"
+authors:
+- family-names: "Chau"
+  given-names: "Joris"
+- family-names: "Segers"
+  given-names: "Alexandre"
+- family-names: "Otava"
+  given-names: "Martin"
+- family-names: "Karanja"
+  given-names: "Stephen"
+title: "cvxoptdes: convex optimal experiment design in R"
+version: 1.0.0
+doi: 10.48550/arXiv.2610.14288
+date-released: 2026-10-18
+url: "https://github.com/openanalytics/cvxoptdes"

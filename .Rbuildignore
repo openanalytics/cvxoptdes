@@ -36,3 +36,5 @@
 ^\.positai$
 ^\.claude$
 ^covr$
+^cran-comments\.md$
+^CITATION\.cff$
