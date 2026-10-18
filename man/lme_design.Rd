@@ -60,7 +60,7 @@ constraints.
 \section{Exact split-plot design}{
 
 The \code{$round_split_plot()} method rounds an approximate design to an exact (integer) split-plot design.
-The rounding procedure enforces fixed levels of hard-to-change variables within each invidual \emph{whole plot},
+The rounding procedure enforces fixed levels of hard-to-change variables within each individual \emph{whole plot},
 where the whole plots are the blocks in the random effects factors (i.e. whole plot variables).
 Mathematically, for an exact design \eqn{m^* = \{m_1, \ldots, m_n \}}, the split-plot rounding procedure solves:
 \deqn{
@@ -632,7 +632,7 @@ The vector must be the same length as the number of design points in \code{data}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated coviarance matrix. If missing, the
+      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated covariance matrix. If missing, the
 design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.}
       \item{\code{design_weights}}{(optional) vector of design weights for which to evaluate the estimated covariance matrix.}
       \item{\code{sigma2}}{numeric error variance used to scale the covariance matrix. Defaults to 1, returning the unscaled covariance matrix.}
@@ -661,7 +661,7 @@ The vector must be the same length as the number of design points in \code{data}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated coviarance matrix. If missing, the
+      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated covariance matrix. If missing, the
 design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.}
       \item{\code{newdata}}{(optional) data frame or matrix with design points (rows) for which to return the standard error of prediction and which
 can be evaluated by \code{$formula}.}

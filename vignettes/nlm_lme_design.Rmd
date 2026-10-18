@@ -2,7 +2,7 @@
 title: "Nonlinear/Linear mixed model optimal design"
 output:
   rmarkdown::html_vignette
-date: "2026-10-05"
+date: "2026-10-18"
 vignette: >
   %\VignetteIndexEntry{Nonlinear/Linear mixed model optimal design}
   %\VignetteEngine{knitr::rmarkdown}

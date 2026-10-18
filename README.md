@@ -29,7 +29,7 @@ Sys.which("cmake")
 #> "/usr/bin/cmake"
 ```
 
-With [Cmake](https://cmake.org/) available, install the R-package from
+With [CMake](https://cmake.org/) available, install the R-package from
 source with:
 
 ``` r
@@ -40,7 +40,7 @@ remotes::install_github("openanalytics/cvxoptdes")
 ### Windows
 
 Using [Rtools42](https://cran.r-project.org/bin/windows/Rtools/) or
-higher, [Cmake](https://cmake.org/) comes with the Rtools installation
+higher, [CMake](https://cmake.org/) comes with the Rtools installation
 and is available by default.
 
 ## Quick start

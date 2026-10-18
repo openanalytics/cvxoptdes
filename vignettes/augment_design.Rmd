@@ -2,7 +2,7 @@
 title: "Optimal design augmentation"
 output:
   rmarkdown::html_vignette
-date: "2026-10-05"
+date: "2026-10-18"
 vignette: >
   %\VignetteIndexEntry{Optimal design augmentation}
   %\VignetteEngine{knitr::rmarkdown}

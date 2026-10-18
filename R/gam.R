@@ -412,7 +412,7 @@ gam_design <- R6Class(
     #' @param max_iter positive integer, maximum number of reweighted optimizations/iterations to run.
     #' @param reweight_fun character reweighting function, one of \code{"entropy", "log-sum", "power"}, see \link{lm_design} for the definitions.
     #' @param eps positive numeric value to ensure finite weights in reweighting functions.
-    #' @param p postive numeric power with \eqn{0 < p < 1}. Only used if \code{reweight_fun = "power"}.
+    #' @param p positive numeric power with \eqn{0 < p < 1}. Only used if \code{reweight_fun = "power"}.
     #' @param tol numeric tolerance used as a threshold for mean absolute relative difference in design weights between iterations to stop early.
     #' @param design_weights (optional) vector of design weights used as initial approximate design.
     #' @param show_progress logical, display a progress bar during the iterative reweighting procedure. Defaults to \code{TRUE}.
@@ -525,7 +525,7 @@ gam_design <- R6Class(
     #' To override the default approximate (optimal) design weights, a vector of design weights can be passed using the \code{design_weights} argument.
     #' The vector must be the same length as the number of design points in \code{data}. If the vector of design weights is already an integer design, leave
     #' \code{m} unspecified, in which case the design is not rescaled.
-    #' @param m (optional) integer number of design points at which to evaluate the estimated coviarance matrix. If missing, the
+    #' @param m (optional) integer number of design points at which to evaluate the estimated covariance matrix. If missing, the
     #' design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.
     #' @param design_weights (optional) vector of design weights for which to evaluate the estimated covariance matrix.
     #' @param sigma2 numeric error variance used to scale the covariance matrix. Defaults to 1, returning the unscaled covariance matrix.
@@ -550,7 +550,7 @@ gam_design <- R6Class(
     #' The design weights are initialized from the \code{design_weights} field, which is the optimal (approximate) design calculated by \code{$optimize()}.
     #' To override the default approximate (optimal) design weights, a vector of design weights can be passed using the \code{design_weights} argument.
     #' The vector must be the same length as the number of design points in \code{data}.
-    #' @param m (optional) integer number of design points at which to evaluate the estimated coviarance matrix. If missing, the
+    #' @param m (optional) integer number of design points at which to evaluate the estimated covariance matrix. If missing, the
     #' design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.
     #' @param newdata (optional) data frame or matrix with design points (rows) at which to return the standard error of prediction and which
     #' can be evaluated by \code{$formula}.

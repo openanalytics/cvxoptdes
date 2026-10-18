@@ -57,7 +57,7 @@ constraints.
 \section{Sparse optimal design}{
 
 The \code{$sparsify()} method solves the penalized optimization problem using a custom penalty function \eqn{P(w)}
-to promote sparsity in the approximate design \eqn{w^*}. Because the sparse opimization problem is
+to promote sparsity in the approximate design \eqn{w^*}. Because the sparse optimization problem is
 not convex, a sequential convex approximation is used substituting the (concave) sparseness penalty by linearized (convex) costs
 on the design weights \eqn{w} similar to the cost penalties above. The following options are supported:
 \subsection{\code{"entropy"}-penalty}{
@@ -550,7 +550,7 @@ for the available control parameters and their default values.}
       \item{\code{reweight_fun}}{character reweighting function, one of \code{"entropy", "log-sum", "power"}, see \sQuote{Details} for the definitions.}
       \item{\code{eps}}{positive numeric value to ensure finite weights in reweighting functions, see \sQuote{Details}.}
       \item{\code{tol}}{numeric tolerance used as a threshold for mean absolute relative difference in design weights between iterations to stop early.}
-      \item{\code{p}}{postive numeric power with \eqn{0 < p < 1}. Only used if \code{reweight_fun = "power"}.}
+      \item{\code{p}}{positive numeric power with \eqn{0 < p < 1}. Only used if \code{reweight_fun = "power"}.}
       \item{\code{design_weights}}{(optional) vector of design weights used as initial approximate design.}
       \item{\code{recenter}}{logical, recenter design columns based on the current design weights after each iteration. Defaults to \code{FALSE}.}
       \item{\code{scs_control}}{an optional list of control parameters to tune the SCS optimization. See \code{\link{scs_control_dflt}}
@@ -724,7 +724,7 @@ The vector must be the same length as the number of design points in \code{data}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated coviarance matrix. If missing, the
+      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated covariance matrix. If missing, the
 design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.}
       \item{\code{design_weights}}{(optional) vector of design weights for which to evaluate the estimated covariance matrix.}
       \item{\code{sigma2}}{numeric error variance used to scale the covariance matrix. Defaults to 1, returning the unscaled covariance matrix.}
@@ -753,7 +753,7 @@ The vector must be the same length as the number of design points in \code{data}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated coviarance matrix. If missing, the
+      \item{\code{m}}{(optional) integer number of design points at which to evaluate the estimated covariance matrix. If missing, the
 design weights remain unscaled, which for the default approximate (optimal) design is equivalent to \code{m = 1}.}
       \item{\code{newdata}}{(optional) data frame or matrix with design points (rows) at which to return the standard error of prediction and which
 can be evaluated by \code{$formula}.}

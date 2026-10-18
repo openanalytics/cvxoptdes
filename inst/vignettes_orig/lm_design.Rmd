@@ -507,7 +507,7 @@ This type of stratification only defines feasibility constraints on the allocati
 The linear model error structure and information matrix are not changed and should not be confused with the construction of *blocked* designs, where the block effects are included in the model as nuisance random or fixed effects. See `vignette("nlm_lme_design")` for the calculation of optimal blocked designs in the context of a
 (random intercept) linear mixed model. 
 
-### Stratified design rouding
+### Stratified design rounding
 
 Similar to rounding of penalized approximate designs, if stratification constraints are present in the
 `$strata` field, these are passed down to the `$round()` method when `"optimal"` rounding is used. 
