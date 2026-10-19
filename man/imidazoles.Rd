@@ -27,12 +27,18 @@ A data.frame containing 1728 experiments with columns:
 \usage{
 imidazoles
 }
+\value{
+data.frame
+}
 \description{
 This dataset reports the yield of the desired product and the reaction cost
 in a direct arylation reaction of imidazoles. Two continuous process conditions
 (temperature, initial concentration) and three reaction molecules
 (base, ligand, solvent) are varied to maximize the yield of the desired
 product while minimizing the cost of the reaction.
+}
+\examples{
+head(imidazoles)
 }
 \references{
 Shields B.J. et al. (2021) \emph{“Bayesian reaction optimization as a tool for chemical synthesis”}, Nature, Vol. 590 (7844).

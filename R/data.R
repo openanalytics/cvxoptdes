@@ -13,6 +13,9 @@
 #' }
 #'
 #' @source \href{https://github.com/the-matter-lab/olympus/tree/main/src/olympus/datasets/dataset_fullerenes}{Olympus: Fullerenes dataset}
+#' @return data.frame
+#' @examples 
+#' head(fullerenes)
 "fullerenes"
 
 #' Imidazoles dataset
@@ -40,6 +43,9 @@
 #' @source \doi{doi:10.1021/jacs.2c08592}
 #' @references Shields B.J. et al. (2021) \emph{“Bayesian reaction optimization as a tool for chemical synthesis”}, Nature, Vol. 590 (7844).
 #' @references Torres J.A.G. et al. (2022) \emph{“A Multi-Objective Active Learning Platform and Web App for Reaction Optimization”}, J. Am. Chem. Soc., Vol. 144 (43).
+#' @return data.frame
+#' @examples 
+#' head(imidazoles)
 "imidazoles"
 
 #' Ethanol dataset
@@ -57,6 +63,9 @@
 #'
 #' @source Brinkman, N.D. (1981). Ethanol fuel – a single-cylinder engine study of efficiency and exhaust emissions. SAE transactions Vol. 90, No 810345, 1410–1424.
 #' @references Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}. Cambridge University Press.
+#' @return data.frame
+#' @examples 
+#' ethanol
 "ethanol"
 
 

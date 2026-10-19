@@ -19,10 +19,16 @@ A data.frame containing 120 experiments with columns:
 \usage{
 fullerenes
 }
+\value{
+data.frame
+}
 \description{
 This dataset reports the production of o-xylenyl adducts of
 Buckminster fullerenes. Three process conditions (temperature, reaction time and
 ratio of sultine to C60) are varied to maximize the mole fraction of the desired
 ' product.
+}
+\examples{
+head(fullerenes)
 }
 \keyword{datasets}

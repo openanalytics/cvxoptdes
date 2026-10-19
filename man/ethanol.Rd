@@ -18,10 +18,16 @@ Brinkman, N.D. (1981). Ethanol fuel – a single-cylinder engine study of effici
 \usage{
 ethanol
 }
+\value{
+data.frame
+}
 \description{
 This dataset reports 88 measurements from an experiment in which ethanol
 was burned in a single cylinder automobile test engine. The data originates from the
 \href{https://CRAN.R-project.org/package=SemiPar}{SemiPar} package, which is now archived.
+}
+\examples{
+ethanol
 }
 \references{
 Ruppert, D., Wand, M.P. and Carroll, R.J. (2003). \emph{Semiparametric Regression}. Cambridge University Press.
