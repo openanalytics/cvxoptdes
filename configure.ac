@@ -1,4 +1,4 @@
-AC_INIT([cvxoptdes],[1.0.0.9000])
+AC_INIT([cvxoptdes],[1.0.0])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then

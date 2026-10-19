@@ -10,7 +10,7 @@ authors:
 - family-names: "Karanja"
   given-names: "Stephen"
 title: "cvxoptdes: convex optimal experiment design in R"
-version: 1.0.0
+version: v1
 doi: 10.48550/arXiv.2610.14288
-date-released: 2026-10-18
+date-released: 2026-10-09
 url: "https://github.com/openanalytics/cvxoptdes"
