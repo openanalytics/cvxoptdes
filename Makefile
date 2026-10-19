@@ -3,7 +3,7 @@ PKGVERS=$(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 
 .PHONY: doc vignette vignette-mkl readme manual globals examples test test-mkl covr build 
 	install install-mkl check check-valgrind packamon docker docker-check docker-test 
-	docker-asan docker-rchk docker-check-clang test-valgrind
+	docker-asan docker-rchk docker-check-clang test-valgrind fig-compress
 
 all: doc check clean
 
@@ -36,6 +36,9 @@ test-mkl:
 
 covr:
 	Rscript -e "covr::report(covr::package_coverage(path=\".\"), file = \"covr/coverage.html\", browse = TRUE)"
+
+compress-figs:
+	find ./vignettes/figures -name "*.png" -type f -size +100k -exec pngquant --ext .png --force --skip-if-larger --quality=20-50 --speed 1 {} \;
 
 build:
 	R CMD build .

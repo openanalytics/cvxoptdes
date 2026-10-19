@@ -21,6 +21,8 @@
 ^src/scs/\.git$
 ^src/scs/\.github$
 ^src/scs/CITATION\.cff$
+^src/scs/docs$
+^src/scs/test$
 ^JenkinsfileSCM$
 ^doc$
 ^docs$
