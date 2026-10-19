@@ -3,7 +3,7 @@ PKGVERS=$(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 
 .PHONY: doc vignette vignette-mkl readme manual globals examples test test-mkl covr build 
 	install install-mkl check check-valgrind packamon docker docker-check docker-test 
-	docker-asan docker-rchk docker-check-clang test-valgrind fig-compress
+	docker-asan docker-rchk docker-check-clang test-valgrind compress-figs
 
 all: doc check clean
 

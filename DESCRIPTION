@@ -4,7 +4,7 @@ Title: Convex Optimal Experiment Design
 Version: 1.0.0
 Date: 2026-10-19
 Authors@R: person("Joris", "Chau", email = "joris.chau@openanalytics.eu", role = c("aut", "cre", "cph"))
-Description: Convex optimal experiment design across a discrete candidate grid using open-source optimization solvers. Specifies and optimizes designs using an object-oriented interface (via 'R6') for linear models, generalized linear/additive models, nonlinear models, and random intercept linear mixed models. Optimization and augmentation of weighted, penalized and convex constrained approximate designs is supported using the Splitting Cone Solver ('SCS'). Optimal rounding to integer-valued designs is supported using point-exchange methods or mixed-integer programming with the 'HiGHS' solver. For details, see Chau et al. (2026) <doi:10.48550/arXiv.2610.14288>. 
+Description: Convex optimal experiment design across discrete candidate grids using open-source optimization solvers. Specifies and optimizes designs using an object-oriented interface (via 'R6') for linear models, generalized linear/additive models, nonlinear models, and random intercept linear mixed models. Optimization and augmentation of weighted, penalized and convex constrained approximate designs is supported using the Splitting Cone Solver ('SCS'). Optimal rounding to integer-valued designs is supported using point-exchange methods or mixed-integer programming with the 'HiGHS' solver. For details, see Chau et al. (2026) <doi:10.48550/arXiv.2610.14288>. 
 BugReports: https://github.com/openanalytics/cvxoptdes/issues
 URL: https://repos.openanalytics.eu/docs/cvxoptdes/, https://github.com/openanalytics/cvxoptdes
 Depends: 
