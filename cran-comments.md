@@ -1,6 +1,7 @@
 ## CRAN package version 1.0.0
 
 * System requirements: GNU make, CMake
+* Fixes initial submission reducing tarball size to <10MB
 
 ## Test environments
 
