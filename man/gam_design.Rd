@@ -90,11 +90,9 @@ design$optimize(criterion = "I")
 (exact_design <- design$round(m = 11, method = "optimal", criterion = "I", seed = 1))
 design$subset(replicates = exact_design)
 
-if(FALSE) {
-  ## GAM fitted to integer design
-  gam_fit <- mgcv::gam(NOx ~ s(E) + C, data = ethanol[exact_design > 0, ])
-  summary(gam_fit)
-}
+## GAM fitted to integer design
+gam_fit <- mgcv::gam(NOx ~ s(E) + C, data = ethanol[exact_design > 0, ])
+summary(gam_fit)
 
 ## Volcano height dataset
 
@@ -118,11 +116,10 @@ exact_design <- design$round(
 )
 design$crit(exact_design, criterion = "I")
 
-if(FALSE) {
-  ## GAM fitted to integer design
-  gam_fit <- mgcv::gam(y ~ s(x1, x2), data = data[exact_design > 0, ])
-  summary(gam_fit)
-}
+## GAM fitted to integer design
+gam_fit <- mgcv::gam(y ~ s(x1, x2), data = data[exact_design > 0, ])
+summary(gam_fit)
+
 }
 \seealso{
 \code{\link[stats]{family}}

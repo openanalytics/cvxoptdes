@@ -136,34 +136,29 @@
 #'
 #' ## Split-plot design
 #'
-#' ## Case study from [Otava & Mylona (2025), Section 4.1]
-#'
 #' data <- expand.grid(
 #'   A = -1:1,
 #'   B = -1:1,
 #'   C = -1:1,
-#'   D = -1:1,
 #'   week = factor(1:7, levels = 1:7)
 #' )
-#'
+#' 
+#' ## two-factor interaction model w/ random week effect
 #' design <- lme_design$new(
-#'   formula = ~ (A + B + C + D)^2 + I(A^2) + I(B^2) + I(C^2) + I(D^2) ~ week,
+#'   formula = ~ (A + B + C)^2 ~ week,
 #'   eta = 1,
 #'   data = data
 #' )
 #' ## initial D-optimal approximate design
 #' design$optimize(criterion = "D", max_iter = 5, return_value = FALSE)
-#' if(FALSE) {
-#'   ## parallel evaluation
-#'   mirai::daemons(n = parallel::detectCores() / 2, seed = 1)
-#'   ## D-optimal split-plot design w/ 3 points per whole plot
-#'   exact_design <- design$round_split_plot(
-#'    m = 3,
-#'    hard_to_change = ~A,
-#'    n_repeats = 100
-#'    )
-#'   mirai::daemons(0)
-#' }
+#' 
+#' ## D-optimal split-plot design w/ 3 points per whole plot
+#' ## and hard-to-change factor A
+#' exact_design <- design$round_split_plot(
+#'   m = 3,
+#'   hard_to_change = ~A
+#' )
+#' design$subset(replicates = exact_design)
 #'
 #' ## Penalized optimal design
 #'
@@ -173,15 +168,13 @@
 #' )
 #' ## initial D-optimal approximate design
 #' design$optimize(criterion = "D", max_iter = 5, return_value = FALSE)
-#' if(FALSE) {
-#'   mirai::daemons(n = parallel::detectCores() / 2, seed = 1)
-#'   exact_design <- design$round_split_plot(
-#'    m = 3,
-#'    hard_to_change = ~A,
-#'    n_repeats = 100
-#'    )
-#'   mirai::daemons(0)
-#' }
+#' 
+#' exact_design <- design$round_split_plot(
+#'   m = 3,
+#'   hard_to_change = ~A
+#' )
+#' design$subset(replicates = exact_design)
+#' 
 #' @return \code{R6}-object of class \code{lme_design} if called with \code{lme_design$new()}.
 #' @export
 lme_design <- R6Class(
@@ -799,15 +792,6 @@ lme_design <- R6Class(
       }
       if(!mirai::daemons_set() || n_repeats < 2) {
         if(!is.null(seed)) {
-          if(exists(".Random.seed", envir = globalenv(), mode = "integer", inherits = FALSE)) {
-            seed0 <- get(".Random.seed", envir = globalenv(), mode = "integer", inherits = FALSE)
-            on.exit(set.seed(seed0))
-          } else {
-            on.exit({
-              set.seed(seed = NULL)
-              rm(".Random.seed", envir = globalenv())
-            })
-          }
           set.seed(seed)
         }
         for(n in 1:n_repeats) {
@@ -1079,15 +1063,6 @@ lme_design <- R6Class(
       }
       if(!mirai::daemons_set() || n_repeats < 2) {
         if(!is.null(seed)) {
-          if(exists(".Random.seed", envir = globalenv(), mode = "integer", inherits = FALSE)) {
-            seed0 <- get(".Random.seed", envir = globalenv(), mode = "integer", inherits = FALSE)
-            on.exit(set.seed(seed0))
-          } else {
-            on.exit({
-              set.seed(seed = NULL)
-              rm(".Random.seed", envir = globalenv())
-            })
-          }
           set.seed(seed)
         }
         for(n in 1:n_repeats) {

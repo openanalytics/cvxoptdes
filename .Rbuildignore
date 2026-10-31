@@ -40,3 +40,4 @@
 ^covr$
 ^cran-comments\.md$
 ^CITATION\.cff$
+^LICENSE$

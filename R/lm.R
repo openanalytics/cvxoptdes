@@ -196,13 +196,6 @@
 #' design$vcov(design_weights = exact_design, sigma2 = 1)
 #' design$corr(design_weights = exact_design)
 #'
-#' if(FALSE) {
-#'  ## parallel evaluation
-#'  mirai::daemons(n = parallel::detectCores() / 2, seed = 1)
-#'  design$round(m = 100, method = "optimal", n_repeats = 1000)
-#'  mirai::daemons(0)
-#' }
-#'
 #' ## Penalized optimal design
 #'
 #' ## assign cost c = 1 if x3 = 1, and c = 0 otherwise
@@ -255,7 +248,7 @@
 #' ## sparsify support by iterative entropy reweighting
 #' design$sparsify(max_iter = 5, criterion = "D", reweight_fun = "entropy")
 #'
-#' if(FALSE) {
+#' if(requireNamespace("highs", quietly = TRUE)) {
 #'  ## integer design w/ orthogonality constraints
 #'  (ortho_design <- design$round(m = 8, method = "orthogonal", seed = 1))
 #'  ## verify correlations
@@ -303,7 +296,7 @@
 #'   design_weights = init_design, gamma = 0.4, criterion = "D", return_value = FALSE
 #' )
 #'
-#' if(FALSE) {
+#' if(requireNamespace("highs", quietly = TRUE)) {
 #'   ## integer design w/ orthogonality constraints
 #'   ortho_augment_design <- design_ortho$round(
 #'     m = 8, method = "orthogonal", augment_design = init_design
@@ -1026,15 +1019,6 @@ lm_design <- R6Class(
         }
         if(!mirai::daemons_set() || n_repeats < 2) {
           if(!is.null(seed)) {
-            if(exists(".Random.seed", envir = globalenv(), mode = "integer", inherits = FALSE)) {
-              seed0 <- get(".Random.seed", envir = globalenv(), mode = "integer", inherits = FALSE)
-              on.exit(set.seed(seed0))
-            } else {
-              on.exit({
-                set.seed(seed = NULL)
-                rm(".Random.seed", envir = globalenv())
-              })
-            }
             set.seed(seed)
           }
           for(n in 1:n_repeats) {
