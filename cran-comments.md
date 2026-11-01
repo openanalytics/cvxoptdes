@@ -1,7 +1,11 @@
 ## CRAN package version 1.0.0
 
 * System requirements: GNU make, CMake
-* Fixes initial submission reducing tarball size to <10MB
+* Fixes initial submission:
+  - fixed package description (removed single quotes around SCS)
+  - removed LICENSE file
+  - fixed function examples (removed if(FALSE){}, limited to single core only)
+  - removed lines accessing .Random.seed in global environment
 
 ## Test environments
 
