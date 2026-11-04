@@ -83,152 +83,8 @@ round_puk <- function(w, m, tol = (.Machine$double.eps)^(1/4), augment = NULL, u
   return(w)
 }
 
-# round_norm <- function(w, m, X, tol = (.Machine$double.eps)^(1/4), max_iter = 100, augment = NULL, upper = 1) {
-# 	## target matrix
-# 	n <- length(w)
-# 	if(upper < 1) {
-# 		tol <- -1
-# 		w <- pmax(w, 0)
-# 	}
-# 	if(!is.null(augment)) {
-# 		w1 <- (m * w + augment) / (m + sum(augment))
-# 		m1 <- m + sum(augment)
-# 		supp <- (w > tol)
-# 		supp1 <- (w1 > tol)
-# 		X_supp <- X[supp, , drop = FALSE]
-# 		X_supp1 <- X[supp1, , drop = FALSE]
-# 	} else {
-# 		w1 <- w
-# 		m1 <- m
-# 		supp <- supp1 <- (w > tol)
-# 		X_supp <- X_supp1 <- X[supp, , drop = FALSE]
-# 	}
-# 	n_supp <- sum(supp)
-# 	invert <- TRUE
-# 	wsqrt <- sqrt(pmax(w1[supp1], 0) / sum(w1[supp1]) * m1)
-# 	M0 <- crossprod(wsqrt * X_supp1)
-# 	Minv0 <- tryCatch(chol2inv(chol(M0)), error = function(e) e)
-# 	if(inherits(Minv0, "error")) {
-# 		## target information instead of inverse information
-# 		Minv0 <- M0
-# 		invert <- FALSE
-# 		warning("Information matrix is not positive definite, minimizing the norm with respect to the information instead of the covariance matrix")
-# 	}
-# 	## initial exact design
-# 	Minv <- NULL
-# 	ntrial <- 0  ## limit sample attempts
-# 	if(!is.null(augment)) {
-# 		wloc0 <- cumsum(supp1)[rep(1:n, times = augment)]
-# 	} else {
-# 		wloc0 <- NULL
-# 	}
-# 	while(is.null(Minv) && ntrial < 50) {
-# 		loc <- setdiff(1:n_supp, wloc0)
-# 		if(length(loc) < m) {
-# 			loc <- 1:n_supp
-# 		}
-# 		wloc <- sample(loc, size = m, replace = FALSE, prob = w[supp][loc])
-# 		M <- crossprod(X_supp1[c(wloc, wloc0), , drop = FALSE])
-# 		if(invert) {
-# 			Minv <- tryCatch(chol2inv(chol(M)), error = function(e) NULL)
-# 		} else {
-# 			Minv <- M
-# 		}
-# 		ntrial <- ntrial + 1
-# 	}
-# 	if(is.null(Minv)) {
-# 		## return highest weights
-# 		if(!is.null(augment)) {
-# 			w[augment > 0] <- 0
-# 		}
-# 		wloc <- order(w, decreasing = TRUE)[1:m]
-# 		w[] <- 0
-# 		w[wloc] <- 1
-# 		return(w)
-# 	}
-# 	## initialize
-# 	w_round <- rep(0, n_supp)
-# 	w_round[wloc] <- 1
-# 	norm0 <- norm(Minv - Minv0, type = "F")
-# 	xi <- matrix(nrow = max_iter, ncol = 2)
-# 	## exchange algorithm
-# 	for(iter in 1:max_iter) {
-# 		## delta function: add x_i, remove x_j
-# 		delta <- matrix(0, nrow = m, ncol = n_supp)
-# 		for(i in 1:m) {
-# 			if(invert) {
-# 				Minvi <- rank1_update(Minv, X_supp[wloc[i], ], sgn = -1)
-# 				if(!is.null(Minvi)) {
-# 					for(j in 1:n_supp) {
-# 						Minvij <- rank1_update(Minvi, X_supp[j, ], sgn = 1)
-# 						if(!is.null(Minvij)) {
-# 							delta[i, j] <- norm0 / norm(Minvij - Minv0, type = "F")
-# 						}
-# 					}
-# 				}
-# 			} else {
-# 				Mi <- Minv - tcrossprod(X_supp[wloc[i], ])
-# 				for(j in 1:n_supp) {
-# 					Mij <- Mi + tcrossprod(X_supp[j, ])
-# 					delta[i, j] <- norm0 / norm(Mij - Minv0, type = "F")
-# 				}
-# 			}
-# 		}
-# 		if(upper < 1) {
-# 			delta[, (w_round + 1) > max(m * upper, 1)] <- 0
-# 		}
-# 		delta_argmax <- which.max(delta)
-# 		if(delta[delta_argmax] >  1 + .Machine$double.eps^0.25) {
-# 			## exchange design point
-# 			mod_m <- delta_argmax %% m
-# 			xout <- wloc[ifelse(mod_m == 0, m, mod_m)]
-# 			xin <- (delta_argmax - 1) %/% m + 1
-# 			w_round[xout] <- w_round[xout] - 1
-# 			w_round[xin] <- w_round[xin] + 1
-# 			if(iter > 1) {
-# 				## stop early when cycling
-# 				if(any(xi[1:(iter - 1), 1] == xin & xi[1:(iter - 1), 2] == xout)) {
-# 					break
-# 				}
-# 			}
-# 			## update variables
-# 			wloc <- rep(1:n_supp, times = w_round)
-# 			if(invert) {
-# 				Minv1 <- double_rank1_update(Minv, X_supp[xin, ], X_supp[xout, ])
-# 				if(is.null(Minv1)) {
-# 					## revert change
-# 					w_round[xout] <- w_round[xout] + 1
-# 					w_round[xin] <- w_round[xin] - 1
-# 					break
-# 				} else {
-# 					Minv <- Minv1
-# 				}
-# 			} else {
-# 				Minv <- Minv - tcrossprod(X_supp[xout, ]) + tcrossprod(X_supp[xin, ])
-# 			}
-# 			norm0 <- norm(Minv - Minv0, type = "F")
-# 			xi[iter, ] <- c(xin, xout)
-# 		} else {
-# 			break
-# 		}
-# 	}
-# 	w[!supp] <- 0
-# 	w[supp] <- w_round
-# 	return(w)
-# }
-
-# lower_tri_idx <- function(i, j, k) {
-#   if(i > j) {
-#     k * (j - 1) + i - (j * (j + 1)) / 2
-#   } else if (j > i) {
-#     k * (i - 1) + j - (i * (i + 1)) / 2
-#   } else {
-#     NA_integer_
-#   }
-# }
-
 round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), zeros = NULL, Xzero = NULL, colmeans = NULL,
-                        augment = NULL, control = list(), seed = NULL, crit = NA, n_supp = NULL, write_mps = NULL) {
+                        augment = NULL, control = list(), seed = NULL, crit = NA, n_supp = NULL, write_mps = NULL, exclude = NULL) {
 
   ## initialize
   if(is.null(w)) {
@@ -392,6 +248,18 @@ round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), ze
       zmax <- numeric(0)
       L <- c(abs(1 - w0[supp]) - abs(w0[supp]), rep(0, n_zeros))
     }
+    if(!is.null(exclude)) {
+      exclude <- exclude[supp, , drop = FALSE]
+      A6 <- as(t(exclude), "dgCMatrix")
+      A6 <- cbind(A6, Matrix(0, nrow = nrow(A6), ncol = n_zeros + n_aux))
+      b6_lwr <- rep(0, nrow(A6))           
+      b6_upr <- rep(m - 1, nrow(A6))       ## sum(w_i) <= m - 1
+    } else {
+      A6 <- Matrix(0, nrow = 0, ncol = n_supp + n_zeros + n_aux)
+      b6_lwr <- numeric(0)
+      b6_upr <- numeric(0)
+    }
+
     ## control parameters
     hi_control <- list(threads = 1L, time_limit = 180, log_to_console = TRUE,
                        mip_detect_symmetry = TRUE, mip_heuristic_effort = 1.0, presolve = "on",
@@ -435,11 +303,11 @@ round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), ze
         hi_sol <- .Call(
           "R_highs_solve",
           L,                     ## linearized costs
-          c(rep(0, n_supp), zeromin, rep(0, n_aux)),
-          c(rep(1, n_supp), zeromax, zmax),   ## upr
-          rbind(A0, A1, A2, A3, A4, A5),     ## A
-          as.numeric(c(-b, b1_lwr, m1, zero_lwr, mean_lwr, rho_lwr)),   ## lhs
-          as.numeric(c(b, b1_upr, m1, zero_upr, mean_upr, rho_upr)),    ## rhs
+          c(rep(0, n_supp), zeromin, rep(0, n_aux)),  ## lwr
+          c(rep(1, n_supp), zeromax, zmax),           ## upr
+          rbind(A0, A1, A2, A3, A4, A5, A6),          ## A
+          as.numeric(c(-b, b1_lwr, m1, zero_lwr, mean_lwr, rho_lwr, b6_lwr)),   ## lhs
+          as.numeric(c(b, b1_upr, m1, zero_upr, mean_upr, rho_upr, b6_upr)),    ## rhs
           rep(c(2L, 1L), times = c(n_supp, n_zeros + n_aux)),   ## types
           FALSE,                     ## maximize
           0.,                        ## offset
@@ -481,6 +349,7 @@ round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), ze
         }
       } else {
         warning(sprintf("HiGHS solver failed with status code: %d", hi_sol$hi_model_status))
+		return(NULL)
       }
     } else {
       ## initialize model
@@ -489,9 +358,9 @@ round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), ze
           L = L,  ## linearized costs
           lower = c(rep(0, n_supp), zeromin, rep(0, n_aux)),
           upper = c(rep(1, n_supp), zeromax, zmax),
-          A = rbind(A0, A1, A2, A3, A4, A5),
-          lhs = c(-b, b1_lwr, m1, zero_lwr, mean_lwr, rho_lwr),
-          rhs = c(b, b1_upr, m1, zero_upr, mean_upr, rho_upr),
+          A = rbind(A0, A1, A2, A3, A4, A5, A6),
+          lhs = c(-b, b1_lwr, m1, zero_lwr, mean_lwr, rho_lwr, b6_lwr),
+          rhs = c(b, b1_upr, m1, zero_upr, mean_upr, rho_upr, b6_upr),
           types = rep(c(2L, 1L), times = c(n_supp, n_aux + n_zeros)),   ## w_i \in {0, 1}
           maximum = FALSE,
           offset = 0
@@ -527,6 +396,7 @@ round_highs <- function(w, m, X, orthogonal, tol = .Machine$double.eps^(1/3), ze
         }
       } else {
         warning(sprintf("HiGHS solver failed with status: %s", highs::hi_solver_status_message(hi_solver)))
+		return(NULL)
       }
     }
   } else {

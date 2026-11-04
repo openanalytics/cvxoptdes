@@ -857,7 +857,12 @@ lm_design <- R6Class(
     #' \item \code{highs_write_mps}, \code{.mps} file path. If provided, the HiGHS MILP is exported in MPS (Mathematical Programming System)
     #' format to the provided file path. Can also be \code{TRUE}, in which case a new \code{.mps} file is created in the current working directory.
     #' Only used if \code{method = "orthogonal"}.}
+    #' \item \itemize{
+    #' \item \code{highs_exclude}, a vector or matrix of (valid) integer designs to exclude when running the HiGHS solver. In case of
+    #' a matrix, each matrix column is viewed as a single integer design, and the number of matrix rows must equal the number of candidate
+    #' design points in \code{$data}. Only used if \code{method = "orthogonal"} and \code{augment_design} is empty.
     #' }
+	#' }
     #' @seealso https://ergo-code.github.io/HiGHS/dev/installation/
     #' @seealso https://mirai.r-lib.org/
     #' @return numeric vector
@@ -889,6 +894,9 @@ lm_design <- R6Class(
         is.numeric(tol), length(tol) == 1, tol > 0,
         is.numeric(max_iter), length(max_iter) == 1, max_iter > 0
       )
+      highs_write_mps <- NULL
+      highs_exclude <- NULL
+
       if(method == "orthogonal") {
         stopifnot("method 'orthogonal' can only be used if orthogonality constraints are present." = !is.null(private$.orthogonal))
         if(!is.null(dots$criterion)) {
@@ -906,8 +914,23 @@ lm_design <- R6Class(
             highs_write_mps <- normalizePath(dots$highs_write_mps, mustWork = FALSE)
             stopifnot("'highs_write_mps' must be an .mps file." = grepl("\\.mps$", basename(highs_write_mps)))
           }
-        } else {
-          highs_write_mps <- NULL
+        }
+        if(!is.null(dots$highs_exclude)) {
+          if(!is.null(augment_design)) {
+            warning("'highs_exclude' is skipped when used in combination with 'augment_design'.")
+          } else {
+            highs_exclude <- round(dots$highs_exclude)
+            if(is.atomic(highs_exclude) && is.null(dim(highs_exclude))) {
+              highs_exclude <- matrix(highs_exclude, ncol = 1, nrow = length(highs_exclude))
+            }
+            if(is.matrix(highs_exclude)) {
+              stopifnot("'highs_exclude' must be a numeric vector or matrix with number of rows equal to the number of candidate design points" =
+                        !any(is.na(highs_exclude)) && identical(nrow(highs_exclude), nrow(private$.X)))
+              stopifnot("The column sums of 'highs_exclude' must equal m, check that each column is a valid design" = all(colSums(highs_exclude) == m))
+            } else {
+              stopifnot("'highs_exclude' must be a vector or a matrix consisting of valid designs to exclude.")
+            }
+          }
         }
       } else if(method == "optimal" || method == "efficient") {
         if(method == "efficient" && is.null(design_weights)) {
@@ -931,6 +954,9 @@ lm_design <- R6Class(
         if(!is.null(dots$highs_write_mps)) {
           warning("'highs_write_mps' is skipped when using method 'optimal' or 'efficient'.")
         }
+        if(!is.null(dots$highs_exclude)) {
+          warning("'highs_exclude' is skipped when using method 'optimal' or 'efficient'.")
+        }
       } else if(method == "dist-min" || method == "dist-sum") {
         crit <- method
         if(!is.null(private$.orthogonal) || !is.null(private$.zeros)) {
@@ -941,6 +967,9 @@ lm_design <- R6Class(
         }
         if(!is.null(dots$highs_write_mps)) {
           warning("'highs_write_mps' is skipped when using method 'dist-min' or 'dist-sum'.")
+        }
+        if(!is.null(dots$highs_exclude)) {
+          warning("'highs_exclude' is skipped when using method 'dist-min' or 'dist-sum'.")
         }
       }
       m <- as.integer(m)
@@ -1141,7 +1170,8 @@ lm_design <- R6Class(
           augment = augment_design,
           control = dots$highs_control,
           seed = seed,
-          write_mps = highs_write_mps
+          write_mps = highs_write_mps,
+          exclude = highs_exclude
         )
         if(!is.null(w_opt)) {
           if(is.null(augment_design)) {

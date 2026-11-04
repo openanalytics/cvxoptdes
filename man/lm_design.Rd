@@ -651,6 +651,11 @@ Defaults to \code{highs_control = list(time_limit = 180, log_to_console = TRUE)}
 \item \code{highs_write_mps}, \code{.mps} file path. If provided, the HiGHS MILP is exported in MPS (Mathematical Programming System)
 format to the provided file path. Can also be \code{TRUE}, in which case a new \code{.mps} file is created in the current working directory.
 Only used if \code{method = "orthogonal"}.}
+\item \itemize{
+\item \code{highs_exclude}, a vector or matrix of (valid) integer designs to exclude when running the HiGHS solver. In case of
+a matrix, each matrix column is viewed as a single integer design, and the number of matrix rows must equal the number of candidate
+design points in \code{$data}. Only used if \code{method = "orthogonal"} and \code{augment_design} is empty.
+}
 }}
     }
     \if{html}{\out{</div>}}
