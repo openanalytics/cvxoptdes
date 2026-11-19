@@ -1,4 +1,4 @@
-AC_INIT([cvxoptdes],[1.0.0])
+AC_INIT([cvxoptdes],[1.0.1])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -10,23 +10,10 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 AC_PROG_CC
 
-if ! test -z "$CMAKE"; then
-    echo "CMAKE set to: $CMAKE"
-else 
-    # Check if cmake is in the PATH
-    CMAKE_PATH="$(command -v cmake)"
-    if ! test -z "$CMAKE_PATH"; then
-        CMAKE="$CMAKE_PATH"
-        echo "CMAKE set to :$CMAKE"
-    # If not, check the typical macOS CMake.app path
-    elif [ -x "/Applications/CMake.app/Contents/bin/cmake" ]; then
-        CMAKE="/Applications/CMake.app/Contents/bin/cmake"
-        echo "CMAKE set to: $CMAKE"
-    # If still not found, print error message
-    else
-        echo "no 'cmake' command found"
-        exit 1
-    fi
+AC_PATH_PROG([CMAKE], [cmake], [],
+  [$PATH:/Applications/CMake.app/Contents/bin])
+if test -z "$CMAKE"; then
+    AC_MSG_ERROR([no 'cmake' command found; install CMake or set CMAKE])
 fi
 
 if ! test -z "$MKLROOT"; then
