@@ -1,11 +1,9 @@
-## CRAN package version 1.0.0
+## CRAN package version 1.0.1
 
 * System requirements: GNU make, CMake
-* Fixes initial submission:
-  - fixed package description (removed single quotes around SCS)
-  - removed LICENSE file
-  - fixed function examples (removed if(FALSE){}, limited to single core only)
-  - removed lines accessing .Random.seed in global environment
+* Fixes CRAN check issues:
+  - LTO/gcc-asan: fixed SCS compilation warnings
+  - macos-x86_64/macos-arm64: fix issue locating CMake (macos) in configure
 
 ## Test environments
 
