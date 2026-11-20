@@ -58,36 +58,31 @@ jobs:
       - uses: r-hub/actions/checkout@v1
         with:
           submodules: true
-      - name: Install ASan/UBSan (nanonext needs libasan/libubsan)
-        if: ${{ contains(matrix.config.container, 'nosuggests') || contains(matrix.config.container, 'valgrind') }}
-        continue-on-error: true
-        run: |
-          if command -v dnf >/dev/null 2>&1; then
-            dnf install -y libasan libubsan
-          elif command -v apt-get >/dev/null 2>&1; then
-            apt-get update -y
-            apt-get install -y libasan8 libubsan1
-          fi
-          asan_lib=$(gcc -print-file-name=libasan.so.8)
-          case "${asan_lib}" in
-            /*) ;;
-            *) asan_lib=$(ldconfig -p | awk '/libasan\.so\.[0-9]+ /{print $NF; exit}') ;;
-          esac
-          asan_lib=$(readlink -f "${asan_lib}")
-          echo "Preloading ${asan_lib}"
-          echo "LD_PRELOAD=${asan_lib}" >> "$GITHUB_ENV"
-          echo "ASAN_OPTIONS=detect_leaks=0" >> "$GITHUB_ENV"
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
+      - name: Install vctrs and nanonext from source
+        if: >-
+          contains(matrix.config.container, 'c23') || 
+          contains(matrix.config.container, 'clang16') || 
+          contains(matrix.config.container, 'clang17') || 
+          contains(matrix.config.container, 'clang18') || 
+          contains(matrix.config.container, 'clang19') || 
+          contains(matrix.config.container, 'noremap') || 
+          contains(matrix.config.container, 'nosuggests') ||
+          contains(matrix.config.container, 'valgrind')
+        shell: Rscript {0}
+        run: pak::pkg_install(c("vctrs?source", "nanonext?source"))
+
       - uses: r-hub/actions/setup-deps@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
       - uses: r-lib/actions/check-r-package@v2
-        if: ${{ contains(matrix.config.container, 'nosuggests') }}
+        if: ${{ contains(matrix.config.container, 'nosuggests') || contains(matrix.config.container, 'valgrind') }}
         env:
           _R_CHECK_FORCE_SUGGESTS_: "false"
         with:
@@ -95,7 +90,7 @@ jobs:
           build_args: 'c("--no-manual", "--no-build-vignettes")'
           upload-snapshots: false
       - uses: r-hub/actions/run-check@v1
-        if: ${{ !contains(matrix.config.container, 'nosuggests') }}
+        if: ${{ !contains(matrix.config.container, 'nosuggests') && !contains(matrix.config.container, 'valgrind') }}
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
