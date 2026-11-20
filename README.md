@@ -19,6 +19,15 @@ al. (2026)](https://doi.org/10.48550/arXiv.2610.14288).
 
 ## Installation
 
+``` r
+## CRAN released version
+install.packages("cvxoptdes")
+
+## Latest development version
+## install.packages("remotes")
+remotes::install_github("openanalytics/cvxoptdes")
+```
+
 When installing the R-package from source, verify that
 [CMake](https://cmake.org/) is installed on the system and is found by R
 using e.g.,
@@ -29,15 +38,7 @@ Sys.which("cmake")
 #> "/usr/bin/cmake"
 ```
 
-With [CMake](https://cmake.org/) available, install the R-package from
-source with:
-
-``` r
-## install.packages("remotes")
-remotes::install_github("openanalytics/cvxoptdes")
-```
-
-### Windows
+#### Windows
 
 Using [Rtools42](https://cran.r-project.org/bin/windows/Rtools/) or
 higher, [CMake](https://cmake.org/) comes with the Rtools installation
