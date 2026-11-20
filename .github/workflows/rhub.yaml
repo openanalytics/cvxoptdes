@@ -58,6 +58,14 @@ jobs:
       - uses: r-hub/actions/checkout@v1
         with:
           submodules: true
+      - name: Install ASan runtime (nanonext needs libasan.so.8)
+        if: ${{ contains(matrix.config.container, 'nosuggests') || contains(matrix.config.container, 'valgrind') }}
+        continue-on-error: true
+        run: |
+          if command -v apt-get >/dev/null 2>&1; then
+            apt-get update -y
+            apt-get install -y libasan8
+          fi
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
