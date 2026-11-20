@@ -68,6 +68,9 @@ jobs:
             apt-get update -y
             apt-get install -y libasan8 libubsan1
           fi
+          asan_lib=$(gcc -print-file-name=libasan.so)
+          echo "LD_PRELOAD=${asan_lib}" >> "$GITHUB_ENV"
+          echo "ASAN_OPTIONS=detect_leaks=0" >> "$GITHUB_ENV"
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
