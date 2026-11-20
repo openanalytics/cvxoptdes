@@ -85,7 +85,17 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
+          extra-packages: any::rcmdcheck
+      - uses: r-lib/actions/check-r-package@v2
+        if: ${{ contains(matrix.config.container, 'nosuggests') }}
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: "false"
+        with:
+          args: 'c("--no-manual", "--ignore-vignettes")'
+          build_args: 'c("--no-manual", "--no-build-vignettes")'
+          upload-snapshots: false
       - uses: r-hub/actions/run-check@v1
+        if: ${{ !contains(matrix.config.container, 'nosuggests') }}
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
