@@ -58,15 +58,15 @@ jobs:
       - uses: r-hub/actions/checkout@v1
         with:
           submodules: true
-      - name: Install ASan runtime (nanonext needs libasan.so.8)
+      - name: Install ASan/UBSan (nanonext needs libasan/libubsan)
         if: ${{ contains(matrix.config.container, 'nosuggests') || contains(matrix.config.container, 'valgrind') }}
         continue-on-error: true
         run: |
           if command -v dnf >/dev/null 2>&1; then
-            dnf install -y libasan
+            dnf install -y libasan libubsan
           elif command -v apt-get >/dev/null 2>&1; then
             apt-get update -y
-            apt-get install -y libasan8
+            apt-get install -y libasan8 libubsan1
           fi
       - uses: r-hub/actions/platform-info@v1
         with:
