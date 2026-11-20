@@ -2,7 +2,7 @@
 title: "Example gallery"
 output:
   rmarkdown::html_vignette
-date: "2026-10-18"
+date: "2026-11-20"
 vignette: >
   %\VignetteIndexEntry{Example gallery}
   %\VignetteEngine{knitr::rmarkdown}
